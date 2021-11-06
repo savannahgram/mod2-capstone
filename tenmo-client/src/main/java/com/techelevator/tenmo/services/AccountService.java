@@ -24,7 +24,7 @@ public class AccountService {
         this.authToken = authToken;
     }
 
-    public static BigDecimal[] showBalance() {
+    public BigDecimal[] showBalance() {
         BigDecimal[] balances = null;
         try {
             Account[] account =
@@ -42,7 +42,7 @@ public class AccountService {
 
 
 
-    private static HttpEntity<Void> makeAuthEntity() {
+    private HttpEntity<Void> makeAuthEntity() {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(authToken);
         return new HttpEntity<>(headers);

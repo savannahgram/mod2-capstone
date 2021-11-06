@@ -12,18 +12,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class JdbcAccountsDao {
+public class JdbcAccountDao {
 
     private JdbcTemplate jdbcTemplate;
 
-    public JdbcAccountsDao(JdbcTemplate jdbcTemplate) {
+    public JdbcAccountDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public BigDecimal[] getBalance(User userObject) {
+    public BigDecimal[] findBalance(String username) {
         BigDecimal[] result = null;
-        String sql = "SELECT balance FROM accounts WHERE user_id = ?";
-        BigDecimal[] balances = jdbcTemplate.queryForObject(sql, BigDecimal[].class, userObject.getId());
+        String sql = "SELECT balance FROM accounts WHERE user_id = (SELECT user_id FROM users WHERE username = ?)";
+        BigDecimal[] balances = jdbcTemplate.queryForObject(sql, BigDecimal[].class, username);
         if (balances != null){
             result = balances;
         }

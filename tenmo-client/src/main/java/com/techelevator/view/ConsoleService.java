@@ -1,6 +1,8 @@
 package com.techelevator.view;
 
 
+import com.techelevator.tenmo.model.Transfer;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -103,6 +105,18 @@ public class ConsoleService {
 
 	public void balanceNotFound() {
 		System.out.println("The balance could not be found.");
+	}
+
+	public void printTransfersByUsername(Transfer[] transfers){
+		System.out.println();
+	}
+
+	public void printTransfersById(Transfer[] transfers){
+
+	}
+
+	public void printNoTransfers(){
+		System.out.println("No transfers were found.");
 	}
 
 	public String showAsDollars(BigDecimal money){

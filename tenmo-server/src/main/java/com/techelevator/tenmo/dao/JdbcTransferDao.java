@@ -3,6 +3,7 @@ package com.techelevator.tenmo.dao;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
@@ -11,9 +12,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Component
-public class JdbcTransfersDao {
+public class JdbcTransferDao {
     private JdbcTemplate jdbcTemplate;
-    private AuthenticatedUser currentUser;
+    private User currentUser;
 
     public List<Transfer> getTransfersByUsername(String username){
         List<Transfer> transfers = null;
@@ -63,12 +64,12 @@ public class JdbcTransfersDao {
 
         if (amount.compareTo(currentBalance) <= 0) {
             String typeSql = "INSERT INTO transfer_types (transfer_status_desc) " +
-                    "VALUES ('sent') " +
+                    "VALUES ('Send') " +
                     "RETURNING transfer_type_id;";
             int transferTypeId = jdbcTemplate.queryForObject(typeSql, int.class);
 
             String statusSql = "INSERT INTO transfer_statuses (transfer_status_desc) " +
-                    "VALUES ('approve') " +
+                    "VALUES ('Approved') " +
                     "RETURNING transfer_status_id;";
             int transferStatusId = jdbcTemplate.queryForObject(statusSql, int.class);
 
