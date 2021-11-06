@@ -4,6 +4,8 @@ package com.techelevator.view;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleService {
@@ -72,5 +74,39 @@ public class ConsoleService {
 			}
 		} while(result == null);
 		return result;
+	}
+
+	public void printBalance(BigDecimal[] balances) {
+		System.out.println("--------------------------------------------");
+		String printedBalance = "";
+		if (balances != null){
+			if (balances.length == 1){
+				printedBalance = "balance is: " + showAsDollars(balances[0]);
+			}
+			else {
+				for (int i = 0; i < balances.length; i++) {
+					if (i == 0) {
+						printedBalance += "The balance for ";
+					}
+					else {
+						printedBalance += "/n";
+					}
+					printedBalance += "Account " + i + " is " + showAsDollars(balances[i]);
+				}
+			}
+		}
+		else {
+			printedBalance = "balance is null";
+		}
+		System.out.println(printedBalance);
+	}
+
+	public void balanceNotFound() {
+		System.out.println("The balance could not be found.");
+	}
+
+	public String showAsDollars(BigDecimal money){
+		String stringMath = "$" + String.format("%.2f",money);
+		return stringMath;
 	}
 }

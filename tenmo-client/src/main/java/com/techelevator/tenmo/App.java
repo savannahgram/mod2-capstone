@@ -1,11 +1,15 @@
 package com.techelevator.tenmo;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.view.ConsoleService;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public class App {
 
@@ -72,16 +76,11 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
-			// Create new reservation for a given hotel
-//			Reservation reservationEnteredByUser = consoleService.promptForReservationData();
-
-			//String balanceFromApi = AccountService.getBalance(int userId);
-
-
-			// if unsuccessful
-			if (reservationFromApi == null) {
-				consoleService.printErrorMessage();
-
+		BigDecimal[] balance = AccountService.showBalance();
+		if (balance != null) {
+			console.printBalance(balance);
+		} else {
+			console.balanceNotFound();
 		}
 	}
 

@@ -1,7 +1,10 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -11,26 +14,38 @@ import java.util.List;
 @Component
 public class JdbcAccountsDao {
 
-    private static final BigDecimal STARTING_BALANCE = new BigDecimal("1000.00");
     private JdbcTemplate jdbcTemplate;
 
     public JdbcAccountsDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public String showAsDollars(BigDecimal money){
-        String stringMath = "$" + String.format("%.2f",money);
-        return stringMath;
+    public BigDecimal[] getBalance(User userObject) {
+        BigDecimal[] result = null;
+        String sql = "SELECT balance FROM accounts WHERE user_id = ?";
+        BigDecimal[] balances = jdbcTemplate.queryForObject(sql, BigDecimal[].class, userObject.getId());
+        if (balances != null){
+            result = balances;
+        }
+        return result;
     }
 
-    public String getBalance(int user_id) {
-        String sql = "SELECT balance FROM accounts WHERE user_id = ?";
-        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, user_id);
-        if (balance != null){
-            return "balance is: " + showAsDollars(balance);
+
+
+    public Account getAccount(String username){
+        Account account = null;
+        String sql = "SELECT account_id, user_id, balance " +
+                "FROM accounts " +
+                "JOIN user " +
+                "ON accounts.user_id = user.user_id " +
+                "WHERE user.username = ?;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
+        while (results.next()) {
+            account.mapRowToAccount(results);
         }
-        else {
-            return "balance is null";
-        }
+        return account;
     }
+
+
+
 }

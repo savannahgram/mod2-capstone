@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import java.math.BigDecimal;
 
@@ -36,4 +37,11 @@ public class Account {
     }
 
 
+    public Account mapRowToAccount (SqlRowSet result) {
+        Account account = new Account();
+        account.setAccountId(result.getInt("account_id"));
+        account.setUserId(result.getInt("user_id"));
+        account.setBalance(result.getBigDecimal("balance"));
+        return account;
+    }
 }
