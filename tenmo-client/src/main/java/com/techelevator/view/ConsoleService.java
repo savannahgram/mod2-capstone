@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -108,7 +109,21 @@ public class ConsoleService {
 	}
 
 	public void printTransfersByUsername(Transfer[] transfers){
-		System.out.println();
+		System.out.println(
+				"-------------------------------------------\n" +
+				"Transfers\n" +
+				"ID          From/To                 Amount\n" +
+				"-------------------------------------------\n");
+		for (Transfer transfer : transfers) {
+			System.out.println(
+					transfer.getTransferId() + "          " + consoleFromType(transfer.getTransferTypeDesc()) + ": " +
+							transfer.getUsernameOfOther() + "          " + showAsDollars(transfer.getAmount) + "\n");
+		System.out.println(
+							"---------\n" +
+							"Please enter transfer ID to view details (0 to cancel): \"");
+//does not having a space for the + cause a problem?
+			//get user input
+	}
 	}
 
 	public void printTransfersById(Transfer[] transfers){
@@ -117,6 +132,13 @@ public class ConsoleService {
 
 	public void printNoTransfers(){
 		System.out.println("No transfers were found.");
+	}
+
+	public String consoleFromType (String type){
+		HashMap<String, String> typeToConsole = new HashMap<>();
+		typeToConsole.put("Send", "From");
+		typeToConsole.put("Received", "To");
+		return typeToConsole.get(type);
 	}
 
 	public String showAsDollars(BigDecimal money){

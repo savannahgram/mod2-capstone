@@ -38,15 +38,19 @@ public class JdbcTransferDao {
 
     public Transfer getTransfersByTransferId(int transferId){
         Transfer newTransfer = null;
+        //sql for knowing whether send or received, so which user based on boolean (if loop to change the parameter)
         String sql = "SELECT transfers.transfer_id, transfers.transfer_type_id, transfers.transfer_status_id, " +
                 "transfers.account_from, transfers.account_to, transfers.amount, transfer_types.transfer_type_desc, " +
-                "transfer_statuses.transfer_status_desc " +
+                "transfer_statuses.transfer_status_desc, users.username " +
                 "FROM transfers " +
                 "JOIN transfer_types " +
                 "ON transfers.transfer_type_id = transfer_types.transfer_type_id " +
                 "JOIN transfer_statuses " +
                 "ON transfers.transfer_status_id = transfer_statuses.transfer_status_id " +
-                "WHERE transfers.transfer_id = ?;";
+                "WHERE transfers.transfer_id = ? " +
+                "JOIN users " +
+                "ON transfers. " +
+                "W;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId);
         while (results.next()) {
             newTransfer = mapRowToTransfer(results);
@@ -86,7 +90,7 @@ public class JdbcTransferDao {
             String giveToReceiverSql = "UPDATE accounts " +
                     "SET balance += ? " +
                     "WHERE user_id = (SELECT user_id FROM users WHERE username = ?);";
-            jdbcTemplate.update(takeFromSenderSql, amount, chosenUsername);
+            jdbcTemplate.update(giveToReceiverSql, amount, chosenUsername);
 
             newTransfer = getTransfersByTransferId(transferId);
         }

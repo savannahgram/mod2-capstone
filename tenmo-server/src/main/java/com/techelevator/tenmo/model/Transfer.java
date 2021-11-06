@@ -3,6 +3,8 @@ package com.techelevator.tenmo.model;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Transfer {
 private int transferId;
@@ -12,9 +14,8 @@ private int transferStatusId;
 private String transferStatusDesc;
 private int accountFrom;
 private int accountTo;
-private BigDecimal amountTransferred;
-private BigDecimal balanceOfFrom;
-private BigDecimal balanceOfTo;
+private BigDecimal amount;
+private String usernameOfOther;
 
     public int getTransferId() {
         return transferId;
@@ -72,28 +73,20 @@ private BigDecimal balanceOfTo;
         this.accountTo = accountTo;
     }
 
-    public BigDecimal getAmountTransferred() {
-        return amountTransferred;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setAmountTransferred(BigDecimal amountTransferred) {
-        this.amountTransferred = amountTransferred;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
-    public BigDecimal getBalanceOfFrom() {
-        return balanceOfFrom;
+    public String getUsernameOfOther() {
+        return usernameOfOther;
     }
 
-    public void setBalanceOfFrom(BigDecimal balanceOfFrom) {
-        this.balanceOfFrom = balanceOfFrom;
-    }
-
-    public BigDecimal getBalanceOfTo() {
-        return balanceOfTo;
-    }
-
-    public void setBalanceOfTo(BigDecimal balanceOfTo) {
-        this.balanceOfTo = balanceOfTo;
+    public void setUsernameOfOther(String usernameOfOther) {
+        this.usernameOfOther = usernameOfOther;
     }
 
     public Transfer mapRowToTransfer (SqlRowSet result) {
@@ -105,9 +98,9 @@ private BigDecimal balanceOfTo;
         transfer.setTransferStatusDesc(result.getString("transfer_statuses.transfer_status_desc"));
         transfer.setAccountFrom(result.getInt("transfers.account_from"));
         transfer.setAccountTo(result.getInt("transfers.account_to"));
-        transfer.setAmountTransferred(result.getBigDecimal("transfers.amount"));
-        transfer.setBalanceOfFrom(result.getBigDecimal("accounts.balance"));
-        transfer.setBalanceOfTo(result.getBigDecimal("accounts.balance"));
+        transfer.setAmount(result.getBigDecimal("transfers.amount"));
+        transfer.setUsernameOfOther(result.getString("users.username"));
         return transfer;
     }
+
 }

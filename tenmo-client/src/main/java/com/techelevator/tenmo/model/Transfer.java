@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.model;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 
 public class Transfer {
 
@@ -12,6 +13,8 @@ public class Transfer {
     private int accountFrom;
     private int accountTo;
     private BigDecimal amount;
+    private String usernameOfOther;
+
 
     public int getTransferId() {
         return transferId;
@@ -76,4 +79,15 @@ public class Transfer {
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
+
+    public String getUsernameOfOther() {
+        return usernameOfOther;
+    }
+
+    public void setUsernameOfOther(String usernameOfOther) {
+        this.usernameOfOther = usernameOfOther;
+    }
+
+
+
 }
