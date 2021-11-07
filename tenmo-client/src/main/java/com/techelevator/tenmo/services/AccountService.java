@@ -27,20 +27,11 @@ public class AccountService {
     public BigDecimal[] showBalance() {
         BigDecimal[] balances = null;
         try {
-            Account[] account =
+            Account account =
                     restTemplate.exchange(API_BASE_URL + "user/" + currentUser.getUser().getUsername(),
-                            HttpMethod.GET, makeAuthEntity(), Account[].class).getBody();
-            /*testing below
-            BigDecimal value = new BigDecimal("500.00");
-            balances[0] = value;
-            is it a dynamic array?
-
-            */
-            for (int i = 0; i < account.length; i++){
-                balances[i] = account[i].getBalance();
-            }
-
-
+                            HttpMethod.GET, makeAuthEntity(), Account.class).getBody();
+           balances[0] = account.getBalance();
+//can get account array instead for multiple results
 
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
