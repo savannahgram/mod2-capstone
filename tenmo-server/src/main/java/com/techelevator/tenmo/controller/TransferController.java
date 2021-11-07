@@ -23,15 +23,17 @@ public class TransferController {
         return transferDao.getTransfersByUsername(currentUser.getName());
     }
 
-    @RequestMapping(path = "", method = RequestMethod.GET)
+    @RequestMapping(path = "id/", method = RequestMethod.GET)
     public Transfer getTransfersByTransferId(int transferId){
         return transferDao.getTransfersByTransferId(transferId);
     }
 
-    @RequestMapping(path = "", method = RequestMethod.GET)
+    @RequestMapping(path = "send/", method = RequestMethod.POST)
     Transfer sendTransfer (String chosenUsername, BigDecimal amount, Principal currentUser){
         return transferDao.sendTransfer(chosenUsername, amount, currentUser.getName());
     }
+
+
 
 
 

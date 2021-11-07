@@ -1,8 +1,8 @@
 package com.techelevator.tenmo.services;
 
-import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,8 +13,8 @@ import org.springframework.web.client.RestTemplate;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class TransferService {
-    private static final String API_BASE_URL = "http://localhost:8080/account/transfer/";
+public class UserService {
+    private static final String API_BASE_URL = "http://localhost:8080/user/";
     private final RestTemplate restTemplate = new RestTemplate();
     private AuthenticatedUser currentUser;
 
@@ -24,49 +24,50 @@ public class TransferService {
         this.authToken = authToken;
     }
 
-    public Transfer[] getTransfersByUsername(String username) {
-        Transfer[] transfers = null;
+    public User[] findAll(){
+        User[] users = null;
         try {
-            transfers =
-                    restTemplate.exchange(API_BASE_URL + "username/" + currentUser.getUser().getUsername(),
-                            HttpMethod.GET, makeAuthEntity(), Transfer[].class).getBody();
+            users =
+                    restTemplate.exchange(API_BASE_URL + "all/",
+                            HttpMethod.GET, makeAuthEntity(), User[].class).getBody();
 
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
         }
-        return transfers;
+        return users;
     }
 
-    public Transfer[] getTransfersByTransferId(int transferId) {
-        Transfer[] transfers = null;
+    public User[] findByUsername(){
+        User[] users = null;
         try {
-            transfers =
-                    restTemplate.exchange(API_BASE_URL + "transferid/" + transferId,
-                            HttpMethod.GET, makeAuthEntity(), Transfer[].class).getBody();
+            users =
+                    restTemplate.exchange(API_BASE_URL + "byusername/",
+                            HttpMethod.GET, makeAuthEntity(), User[].class).getBody();
 
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
         }
-        return transfers;
+        return users;
     }
 
-    public Transfer sendTransfer(String chosenUsername, BigDecimal amount, String currentUsername){
-        Transfer newTransfer = null;
+    public User[] findIdByUsername(){
+        User[] users = null;
         try {
-            newTransfer =
-                    restTemplate.exchange(API_BASE_URL + "send/",
-                            HttpMethod.POST, makeAuthEntity(), Transfer.class).getBody();
+            users =
+                    restTemplate.exchange(API_BASE_URL + "findid/",
+                            HttpMethod.GET, makeAuthEntity(), User[].class).getBody();
 
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
         }
-        return newTransfer;
+        return users;
     }
+
+
 
     private HttpEntity<Void> makeAuthEntity() {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(currentUser.getToken());
         return new HttpEntity<>(headers);
     }
-
 }

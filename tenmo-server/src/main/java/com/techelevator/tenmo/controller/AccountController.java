@@ -16,7 +16,7 @@ public class AccountController {
 
     private AccountDao accountDao;
 
-    @RequestMapping(path = "", method = RequestMethod.GET)
+    @RequestMapping(path = "balance/", method = RequestMethod.GET)
     public BigDecimal[] findBalance(Principal currentUser) {
         return accountDao.findBalance(currentUser.getName());
     }

@@ -121,6 +121,9 @@ public class ConsoleService {
 		System.out.println(
 							"---------\n" +
 							"Please enter transfer ID to view details (0 to cancel): \"");
+		int transferDetailId = in.nextInt();
+
+			System.out.println();
 //does not having a space for the + cause a problem?
 			//get user input
 	}
@@ -129,6 +132,19 @@ public class ConsoleService {
 
 	public void printNoTransfers(){
 		System.out.println("No transfers were found.");
+	}
+
+	public void printSendTransfer(){
+		System.out.println("-------------------------------------------\n" +
+				"Users\n" +
+				"ID          Name\n" +
+				"-------------------------------------------\n" +
+				"313         Bernice\n" +
+				"54          Larry\n" +
+				"---------\n" +
+				"\n" +
+				"Enter ID of user you are sending to (0 to cancel):\n" +
+				"Enter amount:");
 	}
 
 	public String consoleFromType (String type){
