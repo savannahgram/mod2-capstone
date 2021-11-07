@@ -2,8 +2,10 @@ package com.techelevator.view;
 
 
 import com.techelevator.tenmo.model.Account;
+import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
+import com.techelevator.tenmo.services.TransferService;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,6 +19,8 @@ public class ConsoleService {
 
 	private PrintWriter out;
 	private Scanner in;
+	private AuthenticatedUser currentUser;
+
 
 	public ConsoleService(InputStream input, OutputStream output) {
 		this.out = new PrintWriter(output, true);
@@ -164,16 +168,28 @@ public class ConsoleService {
 			System.out.println(
 					transfer.getTransferId() + "          " + consoleFromType(transfer.getTransferTypeDesc()) + ": " +
 							transfer.getUsernameOfOther() + "          " + showAsDollars(transfer.getAmount()) + "\n");
-		System.out.println(
+		}
+			System.out.println(
 							"---------\n" +
 							"Please enter transfer ID to view details (0 to cancel): \"");
 		int transferDetailId = in.nextInt();
-
-			System.out.println();
+		TransferService transferService = new TransferService();
+			Transfer chosenTransfer = transferService.getTransferByTransferId(transferDetailId);
+			String currentUsername = currentUser.getUser().getUsername();
+			String otherUsername = chosenTransfer.getUsernameOfOther();
+			System.out.println("--------------------------------------------\n" +
+					"Transfer Details\n" +
+					"--------------------------------------------\n" +
+					" Id: " + chosenTransfer.getTransferId() + "\n" +
+					" From: " + (chosenTransfer.getTransferTypeDesc().equals("Send") ? currentUsername : otherUsername) + "\n" +
+					" To: " + (chosenTransfer.getTransferTypeDesc().equals("Send") ? otherUsername : currentUsername) + "\n" +
+					" Type: " + chosenTransfer.getTransferTypeDesc() + "\n" +
+					" Status: " + chosenTransfer.getTransferStatusId() + "\n" +
+					" Amount: " + chosenTransfer.getAmount());
 //does not having a space for the + cause a problem?
 			//get user input
 	}
-	}
+
 
 
 	public void printNoTransfers(){

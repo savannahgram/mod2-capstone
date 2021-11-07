@@ -19,7 +19,7 @@ public class AccountController {
     private AccountDao accountDao;
 
 
-    @RequestMapping(path = "user/{username}", method = RequestMethod.GET)
+    @RequestMapping(path = "user/{username}/", method = RequestMethod.GET)
     public Account getAccount(@PathVariable String username){
         return accountDao.getAccount(username);
     }

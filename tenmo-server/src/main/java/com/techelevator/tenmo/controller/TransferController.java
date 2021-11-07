@@ -25,8 +25,8 @@ public class TransferController {
     }
 
     @RequestMapping(path = "transferid/", method = RequestMethod.GET)
-    public Transfer getTransfersByTransferId(int transferId){
-        return transferDao.getTransfersByTransferId(transferId);
+    public Transfer getTransferByTransferId(int transferId){
+        return transferDao.getTransferByTransferId(transferId);
     }
 
     @RequestMapping(path = "send/", method = RequestMethod.POST)

@@ -37,17 +37,17 @@ public class TransferService {
         return transfers;
     }
 
-    public Transfer[] getTransfersByTransferId(int transferId) {
-        Transfer[] transfers = null;
+    public Transfer getTransferByTransferId(int transferId) {
+        Transfer transfer = null;
         try {
-            transfers =
+            transfer =
                     restTemplate.exchange(API_BASE_URL + "transferid/" + transferId,
-                            HttpMethod.GET, makeAuthEntity(), Transfer[].class).getBody();
+                            HttpMethod.GET, makeAuthEntity(), Transfer.class).getBody();
 
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
         }
-        return transfers;
+        return transfer;
     }
 
     public Transfer sendTransfer(String chosenUsername, BigDecimal amount, String currentUsername){

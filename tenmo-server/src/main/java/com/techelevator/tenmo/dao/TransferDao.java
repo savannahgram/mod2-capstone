@@ -9,7 +9,7 @@ public interface TransferDao {
 
     List<Transfer> getTransfersByUsername(String username);
 
-    Transfer getTransfersByTransferId(int transferId);
+    Transfer getTransferByTransferId(int transferId);
 
     Transfer sendTransfer (String chosenUsername, BigDecimal amount, String currentUsername);
 

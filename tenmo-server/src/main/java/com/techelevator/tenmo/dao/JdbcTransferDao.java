@@ -48,7 +48,7 @@ public class JdbcTransferDao {
         return transferType;
     }
 
-    public Transfer getTransfersByTransferId(int transferId){
+    public Transfer getTransferByTransferId(int transferId){
         Transfer newTransfer = null;
         //sql for knowing whether send or received, so which user based on boolean (if loop to change the parameter)
         String whichName = "account_to";
@@ -65,7 +65,8 @@ public class JdbcTransferDao {
                 "ON transfers.transfer_status_id = transfer_statuses.transfer_status_id " +
                 "WHERE transfers.transfer_id = ? " +
                 "JOIN users " +
-                "ON transfers.? = users.user_id;";
+                "ON transfers.? = users.user_id " +
+                "LIMIT 1;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId, whichName);
         while (results.next()) {
             newTransfer = mapRowToTransfer(results);
@@ -123,7 +124,7 @@ public class JdbcTransferDao {
             takeFromSender(amount, currentUsername);
             giveToReceiver(amount, chosenUsername);
 
-            newTransfer = getTransfersByTransferId(transferId);
+            newTransfer = getTransferByTransferId(transferId);
         }
         return newTransfer;
     }
