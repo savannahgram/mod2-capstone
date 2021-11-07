@@ -96,6 +96,18 @@ public class ConsoleService {
 		return amount;
 	}
 
+	public void insufficientFunds(){
+		out.println();
+		out.println(" Insufficient Funds. Please try a smaller amount after viewing your balance. ");
+		out.flush();
+	}
+
+	public void incorrectUserId(){
+		out.println();
+		out.println("User ID does not exist! Please check the list of users again.");
+		out.flush();
+	}
+
 	public void displayOtherUsers(User[] users, String username){
 		out.println("-----------------------------------------");
 		out.println("Users");

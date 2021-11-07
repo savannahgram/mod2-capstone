@@ -103,7 +103,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 		BigDecimal amount = console.getTransferAmount();
 
-		if ((accountService.showBalance().subtract(amount).compareTo(BigDecimal.ZERO)) < 0){
+		if ((accountService.showBalance()[0].subtract(amount).compareTo(BigDecimal.ZERO)) < 0){
 			console.insufficientFunds();
 			return;
 		}
