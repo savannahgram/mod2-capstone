@@ -3,6 +3,7 @@ package com.techelevator.tenmo;
 import com.techelevator.tenmo.model.*;
 import com.techelevator.tenmo.services.*;
 import com.techelevator.view.ConsoleService;
+import io.cucumber.java.bs.A;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -94,6 +95,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private void sendBucks() {
 		// TODO Auto-generated method stub
 		UserService userService = new UserService();
+		AccountService accountService = new AccountService();
 		User[] userList = userService.findAll();
 		console.displayOtherUsers(userList, currentUser.getUser().getUsername());
 
@@ -101,9 +103,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 		BigDecimal amount = console.getTransferAmount();
 
-		Account userAccount = filterAccountByUserId(currentUser.getUser().getId(), userList);
-
-		if ((accountFrom.getBalance().subtract(amount).compareTo(BigDecimal.ZERO)) < 0){
+		if ((accountService.showBalance().subtract(amount).compareTo(BigDecimal.ZERO)) < 0){
 			console.insufficientFunds();
 			return;
 		}
@@ -187,4 +187,14 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		String password = console.getUserInput("Password");
 		return new UserCredentials(username, password);
 	}
+/*
+	private Account filterAccountByUserId(int userId, List<Account> accountList){
+    	Account account = null;
+    	for (Account filter : accountList){
+    		if (filter.getUserId() == userId){
+    			account = filter;
+			}
+		}
+	}
+	*/
 }
