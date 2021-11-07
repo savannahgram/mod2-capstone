@@ -50,6 +50,19 @@ public class UserService {
         return users;
     }
 
+    public User findById(int id){
+        User user = null;
+        try {
+            User[] users =
+                    restTemplate.exchange(API_BASE_URL + "byid/",
+                            HttpMethod.GET, makeAuthEntity(), User[].class).getBody();
+user = users[0];
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            System.out.println(e.getMessage());
+        }
+        return user;
+    }
+
     public User[] findIdByUsername(){
         User[] users = null;
         try {

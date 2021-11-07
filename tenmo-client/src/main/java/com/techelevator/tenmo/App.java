@@ -6,6 +6,7 @@ import com.techelevator.view.ConsoleService;
 import io.cucumber.java.bs.A;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 public class App {
@@ -28,6 +29,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private ConsoleService console;
     private AuthenticationService authenticationService;
     private AccountService accountService;
+    private TransferService transferService;
 
 
     public static void main(String[] args) {
@@ -84,7 +86,9 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
-		
+		TransferService transferService = new TransferService();
+		Transfer[] transfers = transferService.getTransfersByUsername(currentUser.getUser().getUsername());
+		console.printTransfers(transfers);
 	}
 
 	private void viewPendingRequests() {
@@ -110,8 +114,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 
 			else {
-				User chosenUserObject = filterUsersByUserId((int)UserIdInput, userList);
-				if(!userList.contains(chosenUserObject)){
+				User chosenUserObject = userService.findById(userIdInput);
+				if(!Arrays.asList(userList).contains(chosenUserObject)){
 					console.incorrectUserId();
 					return;
 				}

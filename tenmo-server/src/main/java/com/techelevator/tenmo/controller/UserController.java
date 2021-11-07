@@ -27,6 +27,11 @@ public class UserController {
         return userDao.findByUsername(username);
     }
 
+    @RequestMapping(path = "byid/", method = RequestMethod.GET)
+    public User findById(int id){
+        return userDao.findById(id);
+    }
+
     @RequestMapping(path = "findid/", method = RequestMethod.GET)
     public int findIdByUsername(String username){
         return userDao.findIdByUsername(username);

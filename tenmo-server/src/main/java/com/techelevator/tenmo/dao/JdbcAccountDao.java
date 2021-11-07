@@ -34,11 +34,12 @@ public class JdbcAccountDao {
 
     public Account getAccount(String username){
         Account account = null;
-        String sql = "SELECT account_id, user_id, balance " +
+        String sql = "SELECT accounts.account_id, accounts.user_id, accounts.balance " +
                 "FROM accounts " +
-                "JOIN user " +
-                "ON accounts.user_id = user.user_id " +
-                "WHERE user.username = ?;";
+                "JOIN users " +
+                "ON accounts.user_id = users.user_id " +
+                "WHERE users.username = ? " +
+                "LIMIT 1;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
         while (results.next()) {
             account.mapRowToAccount(results);
