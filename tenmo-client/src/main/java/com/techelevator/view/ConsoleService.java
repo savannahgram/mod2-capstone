@@ -108,7 +108,7 @@ public class ConsoleService {
 		System.out.println("The balance could not be found.");
 	}
 
-	public void printTransfersByUsername(Transfer[] transfers){
+	public void printTransfers(Transfer[] transfers){
 		System.out.println(
 				"-------------------------------------------\n" +
 				"Transfers\n" +
@@ -117,7 +117,7 @@ public class ConsoleService {
 		for (Transfer transfer : transfers) {
 			System.out.println(
 					transfer.getTransferId() + "          " + consoleFromType(transfer.getTransferTypeDesc()) + ": " +
-							transfer.getUsernameOfOther() + "          " + showAsDollars(transfer.getAmount) + "\n");
+							transfer.getUsernameOfOther() + "          " + showAsDollars(transfer.getAmount()) + "\n");
 		System.out.println(
 							"---------\n" +
 							"Please enter transfer ID to view details (0 to cancel): \"");
@@ -126,9 +126,6 @@ public class ConsoleService {
 	}
 	}
 
-	public void printTransfersById(Transfer[] transfers){
-
-	}
 
 	public void printNoTransfers(){
 		System.out.println("No transfers were found.");

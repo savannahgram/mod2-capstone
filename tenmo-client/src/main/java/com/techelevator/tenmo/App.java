@@ -76,7 +76,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
-		BigDecimal[] balance = AccountService.showBalance();
+		AccountService accountService = new AccountService();
+		BigDecimal[] balance = accountService.showBalance();
 		if (balance != null) {
 			console.printBalance(balance);
 		} else {

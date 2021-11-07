@@ -24,12 +24,12 @@ public class TransferController {
     }
 
     @RequestMapping(path = "", method = RequestMethod.GET)
-    public Transfer getTransfersByTransferId(int transferId);{
+    public Transfer getTransfersByTransferId(int transferId){
         return transferDao.getTransfersByTransferId(transferId);
     }
 
     @RequestMapping(path = "", method = RequestMethod.GET)
-    Transfer sendTransfer (String chosenUsername, BigDecimal amount, Principal currentUser);{
+    Transfer sendTransfer (String chosenUsername, BigDecimal amount, Principal currentUser){
         return transferDao.sendTransfer(chosenUsername, amount, currentUser.getName());
     }
 

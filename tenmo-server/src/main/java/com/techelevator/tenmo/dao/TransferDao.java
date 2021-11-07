@@ -11,7 +11,7 @@ public interface TransferDao {
 
     Transfer getTransfersByTransferId(int transferId);
 
-    Transfer sendTransfer (String chosenUsername, BigDecimal amount);
+    Transfer sendTransfer (String chosenUsername, BigDecimal amount, String currentUsername);
 
 
 }

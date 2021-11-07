@@ -36,9 +36,25 @@ public class JdbcTransferDao {
         return transfers;
     }
 
+    private String findTransferType(int transferId){
+        String transferType = null;
+        String sql = "SELECT transfer_types.transfer_type_desc " +
+                "FROM transfer_types " +
+                "JOIN transfers " +
+                "ON transfer_types.transfer_type_id = transfers.transfer_type_id " +
+                "WHERE transfers.transfer_id = ?;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId);
+        transferType = results.getString("transfer_types.transfer_type_desc");
+        return transferType;
+    }
+
     public Transfer getTransfersByTransferId(int transferId){
         Transfer newTransfer = null;
         //sql for knowing whether send or received, so which user based on boolean (if loop to change the parameter)
+        String whichName = "account_to";
+        if (findTransferType(transferId) == "Send"){
+            whichName = "account_to";
+        }
         String sql = "SELECT transfers.transfer_id, transfers.transfer_type_id, transfers.transfer_status_id, " +
                 "transfers.account_from, transfers.account_to, transfers.amount, transfer_types.transfer_type_desc, " +
                 "transfer_statuses.transfer_status_desc, users.username " +
@@ -49,48 +65,63 @@ public class JdbcTransferDao {
                 "ON transfers.transfer_status_id = transfer_statuses.transfer_status_id " +
                 "WHERE transfers.transfer_id = ? " +
                 "JOIN users " +
-                "ON transfers. " +
-                "W;";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId);
+                "ON transfers.? = users.user_id;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId, whichName);
         while (results.next()) {
             newTransfer = mapRowToTransfer(results);
         }
         return newTransfer;
     }
 
-    private Transfer sendTransfer (String chosenUsername, BigDecimal amount){
-        Transfer newTransfer = null;
-
+    private BigDecimal checkBalanceEnough(String currentUsername){
         String checkBalanceSql = "SELECT balance " +
                 "FROM account " +
                 "WHERE user_id = (SELECT user_id FROM users WHERE username = ?);";
-        BigDecimal currentBalance = jdbcTemplate.queryForObject(checkBalanceSql, currentUser.getUsername);
+        BigDecimal currentBalance = jdbcTemplate.queryForObject(checkBalanceSql, BigDecimal.class, currentUsername);
+        return currentBalance;
+    }
 
-        if (amount.compareTo(currentBalance) <= 0) {
-            String typeSql = "INSERT INTO transfer_types (transfer_status_desc) " +
-                    "VALUES ('Send') " +
-                    "RETURNING transfer_type_id;";
-            int transferTypeId = jdbcTemplate.queryForObject(typeSql, int.class);
+    private int addTransferType(){
+        String typeSql = "INSERT INTO transfer_types (transfer_status_desc) " +
+                "VALUES ('Send') " +
+                "RETURNING transfer_type_id;";
+        int transferTypeId = jdbcTemplate.queryForObject(typeSql, int.class);
+        return transferTypeId;
+    }
 
-            String statusSql = "INSERT INTO transfer_statuses (transfer_status_desc) " +
-                    "VALUES ('Approved') " +
-                    "RETURNING transfer_status_id;";
-            int transferStatusId = jdbcTemplate.queryForObject(statusSql, int.class);
+    private int addTransferStatus(){
+        String statusSql = "INSERT INTO transfer_statuses (transfer_status_desc) " +
+                "VALUES ('Approved') " +
+                "RETURNING transfer_status_id;";
+        int transferStatusId = jdbcTemplate.queryForObject(statusSql, int.class);
+        return transferStatusId;
+    }
 
+    private void takeFromSender(BigDecimal amount, String currentUsername){
+        String takeFromSenderSql = "UPDATE accounts " +
+                "SET balance -= ? " +
+                "WHERE user_id = (SELECT user_id FROM users WHERE username = ?);";
+        jdbcTemplate.update(takeFromSenderSql, amount, currentUsername);
+    }
+
+    private void giveToReceiver(BigDecimal amount, String chosenUsername){
+        String giveToReceiverSql = "UPDATE accounts " +
+                "SET balance += ? " +
+                "WHERE user_id = (SELECT user_id FROM users WHERE username = ?);";
+        jdbcTemplate.update(giveToReceiverSql, amount, chosenUsername);
+    }
+
+    private Transfer sendTransfer (String chosenUsername, BigDecimal amount, String currentUsername){
+        Transfer newTransfer = null;
+
+        if (amount.compareTo(checkBalanceEnough(currentUsername)) <= 0) {
             String transferSql = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
-                    "VALUES (?, ?, ?) " +
+                    "VALUES (?, ?, ?, ?, ?) " +
                     "RETURNING transfer_id;";
-            int transferId = jdbcTemplate.queryForObject(transferSql, currentUser.getUsername(), chosenUsername, amount);
+            int transferId = jdbcTemplate.queryForObject(transferSql, int.class, addTransferType(), addTransferStatus(), currentUsername, chosenUsername, amount);
 
-            String takeFromSenderSql = "UPDATE accounts " +
-                    "SET balance -= ? " +
-                    "WHERE user_id = (SELECT user_id FROM users WHERE username = ?);";
-            jdbcTemplate.update(takeFromSenderSql, amount, currentUser.getUsername);
-
-            String giveToReceiverSql = "UPDATE accounts " +
-                    "SET balance += ? " +
-                    "WHERE user_id = (SELECT user_id FROM users WHERE username = ?);";
-            jdbcTemplate.update(giveToReceiverSql, amount, chosenUsername);
+            takeFromSender(amount, currentUsername);
+            giveToReceiver(amount, chosenUsername);
 
             newTransfer = getTransfersByTransferId(transferId);
         }
