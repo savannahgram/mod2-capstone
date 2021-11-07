@@ -14,7 +14,7 @@ import java.util.List;
 
 public class AccountService {
 
-    private static final String API_BASE_URL = "http://localhost:8080/account";
+    private static final String API_BASE_URL = "http://localhost:8080/account/";
     private final RestTemplate restTemplate = new RestTemplate();
     private AuthenticatedUser currentUser;
 
@@ -28,12 +28,20 @@ public class AccountService {
         BigDecimal[] balances = null;
         try {
             Account[] account =
-                    restTemplate.exchange(API_BASE_URL + "accounts/user/" + currentUser.getUser().getUsername(),
+                    restTemplate.exchange(API_BASE_URL + "user/" + currentUser.getUser().getUsername(),
                             HttpMethod.GET, makeAuthEntity(), Account[].class).getBody();
+            /*testing below
+            BigDecimal value = new BigDecimal("500.00");
+            balances[0] = value;
+            is it a dynamic array?
+
+            */
             for (int i = 0; i < account.length; i++){
                 balances[i] = account[i].getBalance();
             }
-            //is it a dynamic array?
+
+
+
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
         }

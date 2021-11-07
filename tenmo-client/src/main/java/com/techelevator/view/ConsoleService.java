@@ -1,7 +1,9 @@
 package com.techelevator.view;
 
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -77,6 +79,38 @@ public class ConsoleService {
 			}
 		} while(result == null);
 		return result;
+	}
+
+	public int getTransferUserId(){
+		out.println("Id of user you want to send to");
+		int userIdChoice = Integer.parseInt(in.nextLine());
+		out.flush();
+		return userIdChoice;
+	}
+
+	public BigDecimal getTransferAmount(){
+		out.println("Enter Amount: ");
+		Double transferAmount = Double.parseDouble(in.nextLine());
+		BigDecimal amount = new BigDecimal(transferAmount);
+		out.flush();
+		return amount;
+	}
+
+	public void displayOtherUsers(User[] users, String username){
+		out.println("-----------------------------------------");
+		out.println("Users");
+		out.printf("%-30s", "ID");
+		out.printf("%-10s", "Name");
+		out.println();
+		out.println("-----------------------------------------");
+
+		for (int i = 0; i < users.length; i++){
+			if (!users[i].getUsername().equals(username)){
+				out.printf("%-30s", users[i].getId());
+				out.printf("%-10s ", users[i].getUsername());
+				out.println();
+			}
+		}
 	}
 
 	public void printBalance(BigDecimal[] balances) {

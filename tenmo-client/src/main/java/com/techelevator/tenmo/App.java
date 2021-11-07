@@ -1,11 +1,7 @@
 package com.techelevator.tenmo;
 
-import com.techelevator.tenmo.model.Account;
-import com.techelevator.tenmo.model.AuthenticatedUser;
-import com.techelevator.tenmo.model.UserCredentials;
-import com.techelevator.tenmo.services.AccountService;
-import com.techelevator.tenmo.services.AuthenticationService;
-import com.techelevator.tenmo.services.AuthenticationServiceException;
+import com.techelevator.tenmo.model.*;
+import com.techelevator.tenmo.services.*;
 import com.techelevator.view.ConsoleService;
 
 import java.math.BigDecimal;
@@ -97,7 +93,34 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
-		
+		UserService userService = new UserService();
+		User[] userList = userService.findAll();
+		console.displayOtherUsers(userList, currentUser.getUser().getUsername());
+
+		int userIdInput = console.getTransferUserId();
+
+		BigDecimal amount = console.getTransferAmount();
+
+		Account userAccount = filterAccountByUserId(currentUser.getUser().getId(), userList);
+
+		if ((accountFrom.getBalance().subtract(amount).compareTo(BigDecimal.ZERO)) < 0){
+			console.insufficientFunds();
+			return;
+		}
+
+
+			else {
+				User chosenUserObject = filterUsersByUserId((int)UserIdInput, userList);
+				if(!userList.contains(chosenUserObject)){
+					console.incorrectUserId();
+					return;
+				}
+			TransferService transferService = new TransferService();
+			Transfer newTransfer = transferService.sendTransfer(chosenUserObject.getUsername(), amount, currentUser.getUser().getUsername());
+
+		}
+
+
 	}
 
 	private void requestBucks() {
