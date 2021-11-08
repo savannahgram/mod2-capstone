@@ -30,6 +30,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private AuthenticationService authenticationService;
     private AccountService accountService;
     private TransferService transferService;
+    private UserService userService;
+    private User[] allUsers;
 
 
     public static void main(String[] args) {
@@ -75,18 +77,18 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
-		AccountService accountService = new AccountService();
-		BigDecimal[] balance = accountService.showBalance();
-		if (balance != null) {
-			console.printBalance(balance);
-		} else {
-			console.balanceNotFound();
+		try {
+			console.printBalance(accountService.showBalance());
+		} catch (Exception e){
+				System.out.println(e.getMessage());
+
 		}
 	}
+	//definitely activates exception
+	//console.balanceNotFound();
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
-		TransferService transferService = new TransferService();
 		Transfer[] transfers = transferService.getTransfersByUsername(currentUser.getUser().getUsername());
 		console.printTransfers(transfers);
 	}
@@ -98,10 +100,9 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
-		UserService userService = new UserService();
-		AccountService accountService = new AccountService();
-		User[] userList = userService.findAll();
-		console.displayOtherUsers(userList, currentUser.getUser().getUsername());
+
+		allUsers = userService.findAll();
+		console.displayOtherUsers(allUsers, currentUser.getUser().getUsername());
 
 		int userIdInput = console.getTransferUserId();
 
@@ -115,7 +116,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 			else {
 				User chosenUserObject = userService.findById(userIdInput);
-				if(!Arrays.asList(userList).contains(chosenUserObject)){
+				if(!Arrays.asList((allUsers)).contains(chosenUserObject)){
 					console.incorrectUserId();
 					return;
 				}

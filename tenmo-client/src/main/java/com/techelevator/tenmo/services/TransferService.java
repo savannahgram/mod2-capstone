@@ -26,6 +26,7 @@ public class TransferService {
 
     public Transfer[] getTransfersByUsername(String username) {
         Transfer[] transfers = null;
+
         try {
             transfers =
                     restTemplate.exchange(API_BASE_URL + "username/" + currentUser.getUser().getUsername(),
@@ -34,6 +35,7 @@ public class TransferService {
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
         }
+
         return transfers;
     }
 

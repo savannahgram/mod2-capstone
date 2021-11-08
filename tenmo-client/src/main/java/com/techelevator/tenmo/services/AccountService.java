@@ -26,6 +26,7 @@ public class AccountService {
 
     public BigDecimal[] showBalance() {
         BigDecimal[] balances = null;
+
         try {
             Account account =
                     restTemplate.exchange(API_BASE_URL + "user/" + currentUser.getUser().getUsername() + "/",
@@ -36,6 +37,7 @@ public class AccountService {
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
         }
+
         return balances;
     }
 
