@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class JdbcAccountDao {
+public class JdbcAccountDao implements AccountDao {
 
     private JdbcTemplate jdbcTemplate;
 
@@ -31,7 +31,7 @@ public class JdbcAccountDao {
     }
 
 
-
+@Override
     public Account getAccount(String username){
         Account account = null;
         String sql = "SELECT accounts.account_id, accounts.user_id, accounts.balance " +

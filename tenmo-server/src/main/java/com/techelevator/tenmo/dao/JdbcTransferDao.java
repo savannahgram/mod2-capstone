@@ -12,10 +12,15 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Component
-public class JdbcTransferDao {
+public class JdbcTransferDao implements TransferDao {
     private JdbcTemplate jdbcTemplate;
     private User currentUser;
 
+    public JdbcTransferDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Override
     public List<Transfer> getTransfersByUsername(String username){
         List<Transfer> transfers = null;
         String sql = "SELECT transfers.transfer_id, transfers.transfer_type_id, transfers.transfer_status_id, " +
@@ -48,6 +53,7 @@ public class JdbcTransferDao {
         return transferType;
     }
 
+    @Override
     public Transfer getTransferByTransferId(int transferId){
         Transfer newTransfer = null;
         //sql for knowing whether send or received, so which user based on boolean (if loop to change the parameter)
@@ -112,7 +118,8 @@ public class JdbcTransferDao {
         jdbcTemplate.update(giveToReceiverSql, amount, chosenUsername);
     }
 
-    private Transfer sendTransfer (String chosenUsername, BigDecimal amount, String currentUsername){
+    @Override
+    public Transfer sendTransfer (String chosenUsername, BigDecimal amount, String currentUsername){
         Transfer newTransfer = null;
 
         if (amount.compareTo(checkBalanceEnough(currentUsername)) <= 0) {
