@@ -13,23 +13,23 @@ import java.security.Principal;
 import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
-@RequestMapping("/account/transfer/")
+@RequestMapping("/transfer")
 @RestController
 public class TransferController {
     private TransferDao transferDao;
 
     //path variable?
-    @RequestMapping(path = "username/", method = RequestMethod.GET)
+    @RequestMapping(path = "/username", method = RequestMethod.GET)
     public List<Transfer> getTransfersByUsername(Principal currentUser){
         return transferDao.getTransfersByUsername(currentUser.getName());
     }
 
-    @RequestMapping(path = "transferid/", method = RequestMethod.GET)
+    @RequestMapping(path = "/transferid", method = RequestMethod.GET)
     public Transfer getTransferByTransferId(int transferId){
         return transferDao.getTransferByTransferId(transferId);
     }
 
-    @RequestMapping(path = "send/", method = RequestMethod.POST)
+    @RequestMapping(path = "/send", method = RequestMethod.POST)
     Transfer sendTransfer (@RequestBody String chosenUsername, BigDecimal amount, Principal currentUser){
         return transferDao.sendTransfer(chosenUsername, amount, currentUser.getName());
     }

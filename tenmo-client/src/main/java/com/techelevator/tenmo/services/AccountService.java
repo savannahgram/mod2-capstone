@@ -25,11 +25,11 @@ public class AccountService {
     }
 
     public BigDecimal[] showBalance() {
-        BigDecimal[] balances = null;
+        BigDecimal[] balances = new BigDecimal [1];
 
         try {
             Account account =
-                    restTemplate.exchange(API_BASE_URL + "user/" + currentUser.getUser().getUsername() + "/",
+                    restTemplate.exchange(API_BASE_URL + "user/" + currentUser.getUser().getUsername(),
                             HttpMethod.GET, makeAuthEntity(), Account.class).getBody();
            balances[0] = account.getBalance();
 //can get account array instead for multiple results

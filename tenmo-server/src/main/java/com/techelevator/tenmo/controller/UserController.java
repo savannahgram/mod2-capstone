@@ -12,27 +12,27 @@ import java.security.Principal;
 import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
-@RequestMapping("/user/")
+@RequestMapping("/user")
 @RestController
 public class UserController {
     private UserDao userDao;
 
-    @RequestMapping(path = "all/", method = RequestMethod.GET)
+    @RequestMapping(path = "/all", method = RequestMethod.GET)
     public List<User> findAll(){
         return userDao.findAll();
     }
 
-    @RequestMapping(path = "byusername/", method = RequestMethod.GET)
+    @RequestMapping(path = "/byusername", method = RequestMethod.GET)
     public User findByUsername(String username){
         return userDao.findByUsername(username);
     }
 
-    @RequestMapping(path = "byid/", method = RequestMethod.GET)
+    @RequestMapping(path = "/byid", method = RequestMethod.GET)
     public User findById(int id){
         return userDao.findById(id);
     }
 
-    @RequestMapping(path = "findid/", method = RequestMethod.GET)
+    @RequestMapping(path = "/findid", method = RequestMethod.GET)
     public int findIdByUsername(String username){
         return userDao.findIdByUsername(username);
     }

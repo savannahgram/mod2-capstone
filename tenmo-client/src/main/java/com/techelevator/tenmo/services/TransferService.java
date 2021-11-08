@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class TransferService {
-    private static final String API_BASE_URL = "http://localhost:8080/account/transfer/";
+    private static final String API_BASE_URL = "http://localhost:8080/transfer/";
     private final RestTemplate restTemplate = new RestTemplate();
     private AuthenticatedUser currentUser;
 
@@ -56,7 +56,7 @@ public class TransferService {
         Transfer newTransfer = null;
         try {
             newTransfer =
-                    restTemplate.exchange(API_BASE_URL + "send/",
+                    restTemplate.exchange(API_BASE_URL + "send",
                             HttpMethod.POST, makeAuthEntity(), Transfer.class).getBody();
 
         } catch (RestClientResponseException | ResourceAccessException e) {

@@ -33,7 +33,7 @@ public class JdbcAccountDao implements AccountDao {
 
 @Override
     public Account getAccount(String username){
-        Account account = null;
+        Account returnAccount;
         String sql = "SELECT accounts.account_id, accounts.user_id, accounts.balance " +
                 "FROM accounts " +
                 "JOIN users " +
@@ -41,12 +41,22 @@ public class JdbcAccountDao implements AccountDao {
                 "WHERE users.username = ? " +
                 "LIMIT 1;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
-        while (results.next()) {
-            account.mapRowToAccount(results);
+        if (results.next()) {
+            returnAccount = mapRowToAccount(results);
         }
-        return account;
+        else {
+            returnAccount = null;
+        }
+        return returnAccount;
     }
 
+    public Account mapRowToAccount (SqlRowSet result) {
+        Account newAccount = new Account();
+        newAccount.setAccountId(result.getInt("account_id"));
+        newAccount.setUserId(result.getInt("user_id"));
+        newAccount.setBalance(result.getBigDecimal("balance"));
+        return newAccount;
+    }
 
 
 }

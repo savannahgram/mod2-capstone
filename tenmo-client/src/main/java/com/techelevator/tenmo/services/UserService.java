@@ -28,7 +28,7 @@ public class UserService {
         User[] users = null;
         try {
             users =
-                    restTemplate.exchange(API_BASE_URL + "all/",
+                    restTemplate.exchange(API_BASE_URL + "all",
                             HttpMethod.GET, makeAuthEntity(), User[].class).getBody();
 
         } catch (RestClientResponseException | ResourceAccessException e) {
@@ -41,7 +41,7 @@ public class UserService {
         User[] users = null;
         try {
             users =
-                    restTemplate.exchange(API_BASE_URL + "byusername/",
+                    restTemplate.exchange(API_BASE_URL + "byusername",
                             HttpMethod.GET, makeAuthEntity(), User[].class).getBody();
 
         } catch (RestClientResponseException | ResourceAccessException e) {
@@ -54,7 +54,7 @@ public class UserService {
         User user = null;
         try {
             User[] users =
-                    restTemplate.exchange(API_BASE_URL + "byid/",
+                    restTemplate.exchange(API_BASE_URL + "byid",
                             HttpMethod.GET, makeAuthEntity(), User[].class).getBody();
 user = users[0];
         } catch (RestClientResponseException | ResourceAccessException e) {
@@ -67,7 +67,7 @@ user = users[0];
         User[] users = null;
         try {
             users =
-                    restTemplate.exchange(API_BASE_URL + "findid/",
+                    restTemplate.exchange(API_BASE_URL + "findid",
                             HttpMethod.GET, makeAuthEntity(), User[].class).getBody();
 
         } catch (RestClientResponseException | ResourceAccessException e) {

@@ -36,12 +36,4 @@ public class Account {
         this.balance = balance;
     }
 
-
-    public Account mapRowToAccount (SqlRowSet result) {
-        Account account = new Account();
-        account.setAccountId(result.getInt("account_id"));
-        account.setUserId(result.getInt("user_id"));
-        account.setBalance(result.getBigDecimal("balance"));
-        return account;
-    }
 }

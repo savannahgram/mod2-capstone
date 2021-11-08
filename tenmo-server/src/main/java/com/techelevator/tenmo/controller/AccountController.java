@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.security.Principal;
 
 @PreAuthorize("isAuthenticated()")
-@RequestMapping("/account/")
+@RequestMapping("/account")
 @RestController
 public class AccountController {
 
@@ -19,8 +19,7 @@ public class AccountController {
     }
 
 
-    @RequestMapping(path = "user/{username}/", method = RequestMethod.GET)
-    @ResponseBody
+    @RequestMapping(path = "/user/{username}", method = RequestMethod.GET)
     public Account getAccount(@PathVariable String username){
         return accountDao.getAccount(username);
     }
