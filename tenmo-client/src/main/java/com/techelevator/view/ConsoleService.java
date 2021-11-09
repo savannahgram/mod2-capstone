@@ -19,7 +19,6 @@ public class ConsoleService {
 
 	private PrintWriter out;
 	private Scanner in;
-	private AuthenticatedUser currentUser;
 
 
 	public ConsoleService(InputStream input, OutputStream output) {
@@ -158,7 +157,7 @@ public class ConsoleService {
 		System.out.println("The balance could not be found.");
 	}
 
-	public void printTransfers(Transfer[] transfers){
+	public void printTransfers(AuthenticatedUser currentUser, Transfer[] transfers){
 		System.out.println(
 				"-------------------------------------------\n" +
 				"Transfers\n" +
@@ -174,7 +173,7 @@ public class ConsoleService {
 							"Please enter transfer ID to view details (0 to cancel): \"");
 		int transferDetailId = in.nextInt();
 		TransferService transferService = new TransferService();
-			Transfer chosenTransfer = transferService.getTransferByTransferId(transferDetailId);
+			Transfer chosenTransfer = transferService.getTransferByTransferId(currentUser, transferDetailId);
 			String currentUsername = currentUser.getUser().getUsername();
 			String otherUsername = chosenTransfer.getUsernameOfOther();
 			System.out.println("--------------------------------------------\n" +

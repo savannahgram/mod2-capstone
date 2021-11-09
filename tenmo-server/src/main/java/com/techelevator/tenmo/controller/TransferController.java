@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.TransferDao;
+import com.techelevator.tenmo.model.SendDTO;
 import com.techelevator.tenmo.model.Transfer;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,10 @@ import java.util.List;
 public class TransferController {
     private TransferDao transferDao;
 
+    public TransferController (TransferDao transferDao){
+        this.transferDao = transferDao;
+    }
+
     //path variable?
     @RequestMapping(path = "/username", method = RequestMethod.GET)
     public List<Transfer> getTransfersByUsername(Principal currentUser){
@@ -30,8 +35,8 @@ public class TransferController {
     }
 
     @RequestMapping(path = "/send", method = RequestMethod.POST)
-    Transfer sendTransfer (@RequestBody String chosenUsername, BigDecimal amount, Principal currentUser){
-        return transferDao.sendTransfer(chosenUsername, amount, currentUser.getName());
+    Transfer sendTransfer (@RequestBody SendDTO sendDTO, Principal currentUser){
+        return transferDao.sendTransfer(sendDTO.getChosenUsername(), sendDTO.getAmount(), currentUser.getName());
     }
 
 

@@ -35,13 +35,18 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 
     public static void main(String[] args) {
-    	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL));
+    	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL), new AccountService(),
+				new TransferService(), new UserService());
     	app.run();
     }
 
-    public App(ConsoleService console, AuthenticationService authenticationService) {
+    public App(ConsoleService console, AuthenticationService authenticationService, AccountService accountService,
+			   TransferService transferService, UserService userService) {
 		this.console = console;
 		this.authenticationService = authenticationService;
+		this.accountService = accountService;
+		this.transferService = transferService;
+		this.userService = userService;
 	}
 
 	public void run() {
@@ -78,7 +83,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
 		try {
-			console.printBalance(accountService.showBalance());
+			console.printBalance(accountService.showBalance(currentUser));
 		} catch (Exception e){
 				System.out.println(e.getMessage());
 
@@ -89,8 +94,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
-		Transfer[] transfers = transferService.getTransfersByUsername(currentUser.getUser().getUsername());
-		console.printTransfers(transfers);
+		Transfer[] transfers = transferService.getTransfersByUsername(currentUser, currentUser.getUser().getUsername());
+		console.printTransfers(currentUser, transfers);
 	}
 
 	private void viewPendingRequests() {
@@ -101,27 +106,27 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private void sendBucks() {
 		// TODO Auto-generated method stub
 
-		allUsers = userService.findAll();
+		allUsers = userService.findAll(currentUser);
 		console.displayOtherUsers(allUsers, currentUser.getUser().getUsername());
 
 		int userIdInput = console.getTransferUserId();
 
 		BigDecimal amount = console.getTransferAmount();
 
-		if ((accountService.showBalance()[0].subtract(amount).compareTo(BigDecimal.ZERO)) < 0){
+		if ((accountService.showBalance(currentUser)[0].subtract(amount).compareTo(BigDecimal.ZERO)) < 0){
 			console.insufficientFunds();
 			return;
 		}
 
 
 			else {
-				User chosenUserObject = userService.findById(userIdInput);
+				User chosenUserObject = userService.findById(currentUser, userIdInput);
 				if(!Arrays.asList((allUsers)).contains(chosenUserObject)){
 					console.incorrectUserId();
 					return;
 				}
 			TransferService transferService = new TransferService();
-			Transfer newTransfer = transferService.sendTransfer(chosenUserObject.getUsername(), amount, currentUser.getUser().getUsername());
+			Transfer newTransfer = transferService.sendTransfer(currentUser, chosenUserObject.getUsername(), amount, currentUser.getUser().getUsername());
 
 		}
 

@@ -16,7 +16,6 @@ import java.util.List;
 public class UserService {
     private static final String API_BASE_URL = "http://localhost:8080/user/";
     private final RestTemplate restTemplate = new RestTemplate();
-    private AuthenticatedUser currentUser;
 
     private String authToken = null;
 
@@ -24,12 +23,16 @@ public class UserService {
         this.authToken = authToken;
     }
 
-    public User[] findAll(){
+    public UserService (){
+
+    }
+
+    public User[] findAll(AuthenticatedUser currentUser){
         User[] users = null;
         try {
             users =
                     restTemplate.exchange(API_BASE_URL + "all",
-                            HttpMethod.GET, makeAuthEntity(), User[].class).getBody();
+                            HttpMethod.GET, makeAuthEntity(currentUser), User[].class).getBody();
 
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
@@ -37,12 +40,12 @@ public class UserService {
         return users;
     }
 
-    public User[] findByUsername(){
+    public User[] findByUsername(AuthenticatedUser currentUser){
         User[] users = null;
         try {
             users =
                     restTemplate.exchange(API_BASE_URL + "byusername",
-                            HttpMethod.GET, makeAuthEntity(), User[].class).getBody();
+                            HttpMethod.GET, makeAuthEntity(currentUser), User[].class).getBody();
 
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
@@ -50,12 +53,12 @@ public class UserService {
         return users;
     }
 
-    public User findById(int id){
+    public User findById(AuthenticatedUser currentUser, int id){
         User user = null;
         try {
             User[] users =
                     restTemplate.exchange(API_BASE_URL + "byid",
-                            HttpMethod.GET, makeAuthEntity(), User[].class).getBody();
+                            HttpMethod.GET, makeAuthEntity(currentUser), User[].class).getBody();
 user = users[0];
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
@@ -63,12 +66,12 @@ user = users[0];
         return user;
     }
 
-    public User[] findIdByUsername(){
+    public User[] findIdByUsername(AuthenticatedUser currentUser, String username){
         User[] users = null;
         try {
             users =
                     restTemplate.exchange(API_BASE_URL + "findid",
-                            HttpMethod.GET, makeAuthEntity(), User[].class).getBody();
+                            HttpMethod.GET, makeAuthEntity(currentUser), User[].class).getBody();
 
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
@@ -78,7 +81,7 @@ user = users[0];
 
 
 
-    private HttpEntity<Void> makeAuthEntity() {
+    private HttpEntity<Void> makeAuthEntity(AuthenticatedUser currentUser) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(currentUser.getToken());
         return new HttpEntity<>(headers);

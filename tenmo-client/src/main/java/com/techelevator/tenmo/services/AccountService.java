@@ -16,7 +16,6 @@ public class AccountService {
 
     private static final String API_BASE_URL = "http://localhost:8080/account/";
     private final RestTemplate restTemplate = new RestTemplate();
-    private AuthenticatedUser currentUser;
 
     private String authToken = null;
 
@@ -24,13 +23,17 @@ public class AccountService {
         this.authToken = authToken;
     }
 
-    public BigDecimal[] showBalance() {
+    public AccountService (){
+
+    }
+
+    public BigDecimal[] showBalance(AuthenticatedUser currentUser) {
         BigDecimal[] balances = new BigDecimal [1];
 
         try {
             Account account =
                     restTemplate.exchange(API_BASE_URL + "user/" + currentUser.getUser().getUsername(),
-                            HttpMethod.GET, makeAuthEntity(), Account.class).getBody();
+                            HttpMethod.GET, makeAuthEntity(currentUser), Account.class).getBody();
            balances[0] = account.getBalance();
 //can get account array instead for multiple results
 
@@ -43,9 +46,9 @@ public class AccountService {
 
 
 
-    private HttpEntity<Void> makeAuthEntity() {
+    private HttpEntity<Void> makeAuthEntity(AuthenticatedUser currentUser) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(authToken);
+        headers.setBearerAuth(currentUser.getToken());
         return new HttpEntity<>(headers);
     }
 

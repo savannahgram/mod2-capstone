@@ -17,6 +17,10 @@ import java.util.List;
 public class UserController {
     private UserDao userDao;
 
+    public UserController (UserDao userDao){
+        this.userDao = userDao;
+    }
+
     @RequestMapping(path = "/all", method = RequestMethod.GET)
     public List<User> findAll(){
         return userDao.findAll();

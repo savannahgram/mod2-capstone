@@ -16,7 +16,7 @@ import java.util.List;
 public class TransferService {
     private static final String API_BASE_URL = "http://localhost:8080/transfer/";
     private final RestTemplate restTemplate = new RestTemplate();
-    private AuthenticatedUser currentUser;
+
 
     private String authToken = null;
 
@@ -24,13 +24,17 @@ public class TransferService {
         this.authToken = authToken;
     }
 
-    public Transfer[] getTransfersByUsername(String username) {
+    public TransferService (){
+
+    }
+
+    public Transfer[] getTransfersByUsername(AuthenticatedUser currentUser, String username) {
         Transfer[] transfers = null;
 
         try {
             transfers =
-                    restTemplate.exchange(API_BASE_URL + "username/" + currentUser.getUser().getUsername(),
-                            HttpMethod.GET, makeAuthEntity(), Transfer[].class).getBody();
+                    restTemplate.exchange(API_BASE_URL + "username/" + username,
+                            HttpMethod.GET, makeAuthEntity(currentUser), Transfer[].class).getBody();
 
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
@@ -39,12 +43,12 @@ public class TransferService {
         return transfers;
     }
 
-    public Transfer getTransferByTransferId(int transferId) {
+    public Transfer getTransferByTransferId(AuthenticatedUser currentUser, int transferId) {
         Transfer transfer = null;
         try {
             transfer =
                     restTemplate.exchange(API_BASE_URL + "transferid/" + transferId,
-                            HttpMethod.GET, makeAuthEntity(), Transfer.class).getBody();
+                            HttpMethod.GET, makeAuthEntity(currentUser), Transfer.class).getBody();
 
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
@@ -52,12 +56,12 @@ public class TransferService {
         return transfer;
     }
 
-    public Transfer sendTransfer(String chosenUsername, BigDecimal amount, String currentUsername){
+    public Transfer sendTransfer(AuthenticatedUser currentUser, String chosenUsername, BigDecimal amount, String currentUsername){
         Transfer newTransfer = null;
         try {
             newTransfer =
                     restTemplate.exchange(API_BASE_URL + "send",
-                            HttpMethod.POST, makeAuthEntity(), Transfer.class).getBody();
+                            HttpMethod.POST, makeAuthEntity(currentUser), Transfer.class).getBody();
 
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
@@ -65,7 +69,7 @@ public class TransferService {
         return newTransfer;
     }
 
-    private HttpEntity<Void> makeAuthEntity() {
+    private HttpEntity<Void> makeAuthEntity(AuthenticatedUser currentUser) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(currentUser.getToken());
         return new HttpEntity<>(headers);

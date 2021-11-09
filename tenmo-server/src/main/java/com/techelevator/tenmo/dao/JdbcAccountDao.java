@@ -20,6 +20,7 @@ public class JdbcAccountDao implements AccountDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    /*
     public BigDecimal[] findBalance(String username) {
         BigDecimal[] result = null;
         String sql = "SELECT balance FROM accounts WHERE user_id = (SELECT user_id FROM users WHERE username = ?)";
@@ -29,6 +30,8 @@ public class JdbcAccountDao implements AccountDao {
         }
         return result;
     }
+
+     */
 
 
 @Override
