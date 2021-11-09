@@ -6,6 +6,7 @@ import com.techelevator.tenmo.model.User;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
@@ -30,9 +31,10 @@ public class UserService {
     public User[] findAll(AuthenticatedUser currentUser){
         User[] users = null;
         try {
-            users =
+            ResponseEntity<User[]> response =
                     restTemplate.exchange(API_BASE_URL + "all",
-                            HttpMethod.GET, makeAuthEntity(currentUser), User[].class).getBody();
+                            HttpMethod.GET, makeAuthEntity(currentUser), User[].class);
+            users = response.getBody();
 
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
@@ -43,9 +45,10 @@ public class UserService {
     public User[] findByUsername(AuthenticatedUser currentUser){
         User[] users = null;
         try {
-            users =
+            ResponseEntity<User[]> response =
                     restTemplate.exchange(API_BASE_URL + "byusername",
-                            HttpMethod.GET, makeAuthEntity(currentUser), User[].class).getBody();
+                            HttpMethod.GET, makeAuthEntity(currentUser), User[].class);
+            users = response.getBody();
 
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
@@ -56,10 +59,11 @@ public class UserService {
     public User findById(AuthenticatedUser currentUser, int id){
         User user = null;
         try {
-            User[] users =
-                    restTemplate.exchange(API_BASE_URL + "byid",
-                            HttpMethod.GET, makeAuthEntity(currentUser), User[].class).getBody();
-user = users[0];
+            ResponseEntity<User> response =
+                    restTemplate.exchange(API_BASE_URL + id,
+                            HttpMethod.GET, makeAuthEntity(currentUser), User.class);
+
+        user = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
         }
@@ -69,9 +73,10 @@ user = users[0];
     public User[] findIdByUsername(AuthenticatedUser currentUser, String username){
         User[] users = null;
         try {
-            users =
+            ResponseEntity<User[]> response =
                     restTemplate.exchange(API_BASE_URL + "findid",
-                            HttpMethod.GET, makeAuthEntity(currentUser), User[].class).getBody();
+                            HttpMethod.GET, makeAuthEntity(currentUser), User[].class);
+            users = response.getBody();
 
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());

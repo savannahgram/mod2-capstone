@@ -31,10 +31,11 @@ public class AccountService {
         BigDecimal[] balances = new BigDecimal [1];
 
         try {
-            Account account =
+            ResponseEntity<Account> response =
                     restTemplate.exchange(API_BASE_URL + "user/" + currentUser.getUser().getUsername(),
-                            HttpMethod.GET, makeAuthEntity(currentUser), Account.class).getBody();
-           balances[0] = account.getBalance();
+                            HttpMethod.GET, makeAuthEntity(currentUser), Account.class);
+           Account account = response.getBody();
+            balances[0] = account.getBalance();
 //can get account array instead for multiple results
 
         } catch (RestClientResponseException | ResourceAccessException e) {

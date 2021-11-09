@@ -31,7 +31,6 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private AccountService accountService;
     private TransferService transferService;
     private UserService userService;
-    private User[] allUsers;
 
 
     public static void main(String[] args) {
@@ -94,8 +93,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
-		Transfer[] transfers = transferService.getTransfersByUsername(currentUser, currentUser.getUser().getUsername());
-		console.printTransfers(currentUser, transfers);
+		Transfer[] transfers = transferService.getTransfersByUsername(currentUser.getUser().getUsername(), currentUser);
+		console.printTransfers(currentUser, transfers, transferService);
 	}
 
 	private void viewPendingRequests() {
@@ -106,7 +105,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private void sendBucks() {
 		// TODO Auto-generated method stub
 
-		allUsers = userService.findAll(currentUser);
+		User[] allUsers = userService.findAll(currentUser);
 		console.displayOtherUsers(allUsers, currentUser.getUser().getUsername());
 
 		int userIdInput = console.getTransferUserId();
@@ -121,13 +120,20 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 			else {
 				User chosenUserObject = userService.findById(currentUser, userIdInput);
-				if(!Arrays.asList((allUsers)).contains(chosenUserObject)){
+				boolean containsChosenUser = false;
+				for (User user : allUsers){
+					if (user.getId() == userIdInput){
+						containsChosenUser = true;
+					}
+				}
+
+				if(!containsChosenUser){
 					console.incorrectUserId();
 					return;
 				}
-			TransferService transferService = new TransferService();
-			Transfer newTransfer = transferService.sendTransfer(currentUser, chosenUserObject.getUsername(), amount, currentUser.getUser().getUsername());
-
+			SendDTO sendDTO = new SendDTO(chosenUserObject.getUsername(), amount);
+				Transfer newTransfer = transferService.sendTransfer(currentUser, sendDTO, currentUser.getUser().getUsername());
+			console.printTransferDetails(currentUser, newTransfer.getTransferId(), transferService);
 		}
 
 

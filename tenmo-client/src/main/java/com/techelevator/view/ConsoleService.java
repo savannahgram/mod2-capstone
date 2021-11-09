@@ -157,7 +157,7 @@ public class ConsoleService {
 		System.out.println("The balance could not be found.");
 	}
 
-	public void printTransfers(AuthenticatedUser currentUser, Transfer[] transfers){
+	public void printTransfers(AuthenticatedUser currentUser, Transfer[] transfers, TransferService transferService){
 		System.out.println(
 				"-------------------------------------------\n" +
 				"Transfers\n" +
@@ -172,22 +172,26 @@ public class ConsoleService {
 							"---------\n" +
 							"Please enter transfer ID to view details (0 to cancel): \"");
 		int transferDetailId = in.nextInt();
-		TransferService transferService = new TransferService();
-			Transfer chosenTransfer = transferService.getTransferByTransferId(currentUser, transferDetailId);
-			String currentUsername = currentUser.getUser().getUsername();
-			String otherUsername = chosenTransfer.getUsernameOfOther();
-			System.out.println("--------------------------------------------\n" +
-					"Transfer Details\n" +
-					"--------------------------------------------\n" +
-					" Id: " + chosenTransfer.getTransferId() + "\n" +
-					" From: " + (chosenTransfer.getTransferTypeDesc().equals("Send") ? currentUsername : otherUsername) + "\n" +
-					" To: " + (chosenTransfer.getTransferTypeDesc().equals("Send") ? otherUsername : currentUsername) + "\n" +
-					" Type: " + chosenTransfer.getTransferTypeDesc() + "\n" +
-					" Status: " + chosenTransfer.getTransferStatusId() + "\n" +
-					" Amount: " + chosenTransfer.getAmount());
+		printTransferDetails(currentUser, transferDetailId, transferService);
+
 //does not having a space for the + cause a problem?
 			//get user input
 	}
+
+public void printTransferDetails (AuthenticatedUser currentUser, int transferDetailId, TransferService transferService)	{
+	Transfer chosenTransfer = transferService.getTransferByTransferId(currentUser, transferDetailId);
+	String currentUsername = currentUser.getUser().getUsername();
+	String otherUsername = chosenTransfer.getUsernameOfOther();
+	System.out.println("--------------------------------------------\n" +
+			"Transfer Details\n" +
+			"--------------------------------------------\n" +
+			" Id: " + chosenTransfer.getTransferId() + "\n" +
+			" From: " + (chosenTransfer.getTransferTypeDesc().equals("Send") ? currentUsername : otherUsername) + "\n" +
+			" To: " + (chosenTransfer.getTransferTypeDesc().equals("Send") ? otherUsername : currentUsername) + "\n" +
+			" Type: " + chosenTransfer.getTransferTypeDesc() + "\n" +
+			" Status: " + chosenTransfer.getTransferStatusId() + "\n" +
+			" Amount: " + chosenTransfer.getAmount());
+}
 
 
 

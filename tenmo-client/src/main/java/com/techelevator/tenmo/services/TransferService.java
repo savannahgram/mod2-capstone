@@ -2,10 +2,9 @@ package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.SendDTO;
 import com.techelevator.tenmo.model.Transfer;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.*;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
@@ -28,13 +27,14 @@ public class TransferService {
 
     }
 
-    public Transfer[] getTransfersByUsername(AuthenticatedUser currentUser, String username) {
+    public Transfer[] getTransfersByUsername(String username, AuthenticatedUser currentUser) {
         Transfer[] transfers = null;
 
         try {
-            transfers =
+            ResponseEntity<Transfer[]> response =
                     restTemplate.exchange(API_BASE_URL + "username/" + username,
-                            HttpMethod.GET, makeAuthEntity(currentUser), Transfer[].class).getBody();
+                            HttpMethod.GET, makeAuthEntity(currentUser), Transfer[].class);
+            transfers = response.getBody();
 
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
@@ -46,28 +46,37 @@ public class TransferService {
     public Transfer getTransferByTransferId(AuthenticatedUser currentUser, int transferId) {
         Transfer transfer = null;
         try {
-            transfer =
+            ResponseEntity<Transfer> response =
                     restTemplate.exchange(API_BASE_URL + "transferid/" + transferId,
-                            HttpMethod.GET, makeAuthEntity(currentUser), Transfer.class).getBody();
-
+                            HttpMethod.GET, makeAuthEntity(currentUser), Transfer.class);
+transfer = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
         }
         return transfer;
     }
 
-    public Transfer sendTransfer(AuthenticatedUser currentUser, String chosenUsername, BigDecimal amount, String currentUsername){
+    public Transfer sendTransfer(AuthenticatedUser currentUser, SendDTO sendDTO, String currentUsername){
+        HttpEntity<SendDTO> entity = makeSendDTOEntity(currentUser, sendDTO);
         Transfer newTransfer = null;
         try {
-            newTransfer =
+            ResponseEntity<Transfer> response =
                     restTemplate.exchange(API_BASE_URL + "send",
-                            HttpMethod.POST, makeAuthEntity(currentUser), Transfer.class).getBody();
-
+                            HttpMethod.POST, entity, Transfer.class);
+        newTransfer = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
         }
         return newTransfer;
     }
+
+    private HttpEntity<SendDTO> makeSendDTOEntity(AuthenticatedUser currentUser, SendDTO sendDTO) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(currentUser.getToken());
+        return new HttpEntity<SendDTO>(sendDTO, headers);
+    }
+
 
     private HttpEntity<Void> makeAuthEntity(AuthenticatedUser currentUser) {
         HttpHeaders headers = new HttpHeaders();

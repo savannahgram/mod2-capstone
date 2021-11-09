@@ -58,12 +58,14 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public User findById(int id) throws UsernameNotFoundException {
-        String sql = "SELECT user_id, username, password_hash FROM users WHERE user_id ILIKE ?;";
+        String sql = "SELECT user_id, username, password_hash FROM users WHERE user_id = ?;";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, id);
         if (rowSet.next()){
             return mapRowToUser(rowSet);
         }
-        throw new UsernameNotFoundException("User " + id + " was not found.");
+        else {
+            throw new UsernameNotFoundException("User " + id + " was not found.");
+        }
     }
 
     @Override
