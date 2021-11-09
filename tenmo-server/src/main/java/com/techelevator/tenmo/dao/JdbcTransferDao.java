@@ -35,7 +35,7 @@ public class JdbcTransferDao implements TransferDao {
                 "ON transfers.transfer_status_id = transfer_statuses.transfer_status_id " +
                 "WHERE transfers.account_from = (SELECT user_id FROM users WHERE username = ?) " +
                 "OR transfers.account_from = (SELECT user_id FROM users WHERE username = ?);";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username, username);
         while (results.next()) {
             Transfer newTransfer = mapRowToTransfer(results);
             transfers.add(newTransfer);
