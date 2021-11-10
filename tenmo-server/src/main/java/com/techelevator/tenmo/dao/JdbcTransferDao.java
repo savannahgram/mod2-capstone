@@ -23,12 +23,15 @@ public class JdbcTransferDao implements TransferDao {
     }
 
     @Override
-    public List<Transfer> getTransfersByUsername(String username){
-        List<Transfer> transfers = null;
+    public Transfer[] getTransfersByUsername(String username){
+        List<Transfer> transfersList = null;
+        //change account-to to account-from or remove property entirely, if request is added as option
         String sql = "SELECT transfers.transfer_id, transfers.transfer_type_id, transfers.transfer_status_id, " +
                 "transfers.account_from, transfers.account_to, transfers.amount, transfer_types.transfer_type_desc, " +
-                "transfer_statuses.transfer_status_desc " +
+                "transfer_statuses.transfer_status_desc, users.username " +
                 "FROM transfers " +
+                "JOIN users " +
+                "ON transfers.account_to = users.user_id " +
                 "JOIN transfer_types " +
                 "ON transfers.transfer_type_id = transfer_types.transfer_type_id " +
                 "JOIN transfer_statuses " +
@@ -38,9 +41,13 @@ public class JdbcTransferDao implements TransferDao {
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username, username);
         while (results.next()) {
             Transfer newTransfer = mapRowToTransfer(results);
-            transfers.add(newTransfer);
+            transfersList.add(newTransfer);
         }
-        return transfers;
+        Transfer[] transferArray = new Transfer[transfersList.size()];
+        for (int i = 0; i > transferArray.length; i ++){
+            transferArray[i] = transfersList.get(i);
+        }
+        return transferArray;
     }
 
     private String findTransferType(int transferId){

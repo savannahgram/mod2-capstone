@@ -14,7 +14,7 @@ import java.util.List;
 
 public class AccountService {
 
-    private static final String API_BASE_URL = "http://localhost:8080/account/";
+    private static final String API_BASE_URL = "http://localhost:8080/account";
     private final RestTemplate restTemplate = new RestTemplate();
 
     private String authToken = null;
@@ -32,7 +32,7 @@ public class AccountService {
 
         try {
             ResponseEntity<Account> response =
-                    restTemplate.exchange(API_BASE_URL + "user/" + currentUser.getUser().getUsername(),
+                    restTemplate.exchange(API_BASE_URL + "/user/" + currentUser.getUser().getUsername(),
                             HttpMethod.GET, makeAuthEntity(currentUser), Account.class);
            Account account = response.getBody();
             balances[0] = account.getBalance();

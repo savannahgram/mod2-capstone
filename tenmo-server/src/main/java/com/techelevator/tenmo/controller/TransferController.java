@@ -11,7 +11,7 @@ import java.security.Principal;
 import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
-@RequestMapping("/transfer")
+@RequestMapping("/transfers")
 @RestController
 public class TransferController {
     private TransferDao transferDao;
@@ -22,7 +22,7 @@ public class TransferController {
 
     //path variable?
     @RequestMapping(path = "/username/{username}", method = RequestMethod.GET)
-    public List<Transfer> getTransfersByUsername(@PathVariable String username){
+    public Transfer[] getTransfersByUsername(@PathVariable String username){
         return transferDao.getTransfersByUsername(username);
     }
 
