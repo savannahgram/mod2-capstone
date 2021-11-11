@@ -59,11 +59,10 @@ public class UserService {
     public User findById(AuthenticatedUser currentUser, int id){
         User user = null;
         try {
-            ResponseEntity<User> response =
+            user =
                     restTemplate.exchange(API_BASE_URL + "/" + id,
-                            HttpMethod.GET, makeAuthEntity(currentUser), User.class);
+                            HttpMethod.GET, makeAuthEntity(currentUser), User.class).getBody();
 
-        user = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
         }
@@ -82,6 +81,19 @@ public class UserService {
             System.out.println(e.getMessage());
         }
         return users;
+    }
+
+    public User findUserByAccountId(AuthenticatedUser currentUser, int accountId){
+        User user = null;
+        try {
+            user =
+                    restTemplate.exchange(API_BASE_URL + "/findbyaccount",
+                            HttpMethod.GET, makeAuthEntity(currentUser), User.class).getBody();
+
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            System.out.println(e.getMessage());
+        }
+        return user;
     }
 
 

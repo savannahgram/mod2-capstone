@@ -17,6 +17,9 @@ private int accountTo;
 private BigDecimal amount;
 private String usernameOfOther;
 
+public Transfer (){
+}
+
     public int getTransferId() {
         return transferId;
     }
@@ -89,18 +92,5 @@ private String usernameOfOther;
         this.usernameOfOther = usernameOfOther;
     }
 
-    public Transfer mapRowToTransfer (SqlRowSet result) {
-        Transfer transfer = new Transfer();
-        transfer.setTransferId(result.getInt("transfers.transfer_id"));
-        transfer.setTransferTypeId(result.getInt("transfers.transfers_type_id"));
-        transfer.setTransferTypeDesc(result.getString("transfer_types.transfer_type_desc"));
-        transfer.setTransferStatusId(result.getInt("transfers.transfers_status_id"));
-        transfer.setTransferStatusDesc(result.getString("transfer_statuses.transfer_status_desc"));
-        transfer.setAccountFrom(result.getInt("transfers.account_from"));
-        transfer.setAccountTo(result.getInt("transfers.account_to"));
-        transfer.setAmount(result.getBigDecimal("transfers.amount"));
-        transfer.setUsernameOfOther(result.getString("users.username"));
-        return transfer;
-    }
 
 }

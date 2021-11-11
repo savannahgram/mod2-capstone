@@ -94,7 +94,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
 		Transfer[] transfers = transferService.getTransfersByUsername(currentUser.getUser().getUsername(), currentUser);
-		console.printTransfers(currentUser, transfers, transferService);
+		console.printTransfers(currentUser, transfers, transferService, userService);
 	}
 
 	private void viewPendingRequests() {
@@ -133,7 +133,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				}
 			SendDTO sendDTO = new SendDTO(chosenUserObject.getUsername(), amount);
 				Transfer newTransfer = transferService.sendTransfer(currentUser, sendDTO, currentUser.getUser().getUsername());
-			console.printTransferDetails(currentUser, newTransfer.getTransferId(), transferService);
+			console.printTransferDetails(currentUser, newTransfer.getTransferId(), transferService, userService);
 		}
 
 

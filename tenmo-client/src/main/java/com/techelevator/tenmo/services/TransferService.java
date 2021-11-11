@@ -60,16 +60,30 @@ transfer = response.getBody();
         HttpEntity<SendDTO> entity = makeSendDTOEntity(currentUser, sendDTO);
         Transfer newTransfer = null;
         try {
-            ResponseEntity<Transfer> response =
+            newTransfer =
                     restTemplate.exchange(API_BASE_URL + "/send",
-                            HttpMethod.POST, entity, Transfer.class);
-        newTransfer = response.getBody();
+                            HttpMethod.POST, entity, Transfer.class).getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            System.out.println(e.getMessage());
+        }
+        return newTransfer;
+    }
+/*
+    public Transfer sendTransfer(AuthenticatedUser currentUser, SendDTO sendDTO, String currentUsername){
+        HttpEntity<SendDTO> entity = makeSendDTOEntity(currentUser, sendDTO);
+        Transfer newTransfer = null;
+        try {
+            newTransfer =
+                    restTemplate.exchange(API_BASE_URL + "/send",
+                            HttpMethod.POST, entity, Transfer.class).getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println(e.getMessage());
         }
         return newTransfer;
     }
 
+
+ */
     private HttpEntity<SendDTO> makeSendDTOEntity(AuthenticatedUser currentUser, SendDTO sendDTO) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

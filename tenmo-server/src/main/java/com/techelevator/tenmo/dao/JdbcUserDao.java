@@ -68,6 +68,20 @@ public class JdbcUserDao implements UserDao {
         }
     }
 
+    public User findUserByAccountId(int id) {
+        String sql = "SELECT users.user_id, users.username, users.password_hash " +
+                "FROM users " +
+                "JOIN accounts " +
+                "ON users.user_id = accounts.user_id " +
+                "WHERE accounts.account_id = ?;";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, id);
+        if (rowSet.next()) {
+            return mapRowToUser(rowSet);
+        } else {
+            throw new UsernameNotFoundException("Something went wrong.");
+            }
+        }
+
     @Override
     public boolean create(String username, String password) {
 

@@ -4,10 +4,7 @@ import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
@@ -33,6 +30,7 @@ public class UserController {
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
+    @ResponseBody
     public User findById(@PathVariable int id){
         return userDao.findById(id);
     }
@@ -40,6 +38,11 @@ public class UserController {
     @RequestMapping(path = "/findid", method = RequestMethod.GET)
     public int findIdByUsername(String username){
         return userDao.findIdByUsername(username);
+    }
+
+    @RequestMapping(path = "/findbyaccount", method = RequestMethod.GET)
+    public User findUserByAccountId(int id){
+        return userDao.findUserByAccountId(id);
     }
 
 

@@ -3,6 +3,7 @@ package com.techelevator.tenmo.controller;
 import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.model.SendDTO;
 import com.techelevator.tenmo.model.Transfer;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,12 +26,13 @@ public class TransferController {
     public Transfer[] getTransfersByUsername(@PathVariable String username){
         return transferDao.getTransfersByUsername(username);
     }
-
+    
     @RequestMapping(path = "/transferid/{transferId}", method = RequestMethod.GET)
     public Transfer getTransferByTransferId(@PathVariable int transferId){
         return transferDao.getTransferByTransferId(transferId);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "/send", method = RequestMethod.POST)
     Transfer sendTransfer (@RequestBody SendDTO sendDTO, Principal currentUser){
         return transferDao.sendTransfer(sendDTO.getChosenUsername(), sendDTO.getAmount(), currentUser.getName());

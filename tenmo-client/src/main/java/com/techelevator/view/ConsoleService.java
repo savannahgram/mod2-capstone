@@ -6,6 +6,7 @@ import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.services.TransferService;
+import com.techelevator.tenmo.services.UserService;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -157,37 +158,50 @@ public class ConsoleService {
 		System.out.println("The balance could not be found.");
 	}
 
-	public void printTransfers(AuthenticatedUser currentUser, Transfer[] transfers, TransferService transferService){
+	public void printTransfers(AuthenticatedUser currentUser, Transfer[] transfers, TransferService transferService,
+							   UserService userService){
+
+
 		System.out.println(
 				"-------------------------------------------\n" +
 				"Transfers\n" +
 				"ID          From/To                 Amount\n" +
 				"-------------------------------------------\n");
 		for (Transfer transfer : transfers) {
+			String fromUsername = userService.findUserByAccountId(currentUser, transfer.getAccountFrom()).getUsername();
+			String toUsername = userService.findUserByAccountId(currentUser, transfer.getAccountFrom()).getUsername();
+			boolean isSend = false;
+			if (transfer.getTransferTypeDesc().equals("Send")){
+				isSend = true;
+			}
 			System.out.println(
 					transfer.getTransferId() + "          " + consoleFromType(transfer.getTransferTypeDesc()) + ": " +
-							transfer.getUsernameOfOther() + "          " + showAsDollars(transfer.getAmount()) + "\n");
+							(isSend ? userService.findUserByAccountId(currentUser, transfer.getAccountFrom()) :
+									userService.findUserByAccountId(currentUser, transfer.getAccountTo())) + "          " + showAsDollars(transfer.getAmount())
+							+ "\n");
 		}
 			System.out.println(
 							"---------\n" +
 							"Please enter transfer ID to view details (0 to cancel): \"");
 		int transferDetailId = in.nextInt();
-		printTransferDetails(currentUser, transferDetailId, transferService);
+		printTransferDetails(currentUser, transferDetailId, transferService, userService);
 
 //does not having a space for the + cause a problem?
 			//get user input
 	}
 
-public void printTransferDetails (AuthenticatedUser currentUser, int transferDetailId, TransferService transferService)	{
+public void printTransferDetails (AuthenticatedUser currentUser, int transferDetailId, TransferService transferService, UserService userService)	{
 	Transfer chosenTransfer = transferService.getTransferByTransferId(currentUser, transferDetailId);
-	String currentUsername = currentUser.getUser().getUsername();
-	String otherUsername = chosenTransfer.getUsernameOfOther();
+
+	String fromUsername = userService.findUserByAccountId(currentUser, chosenTransfer.getAccountFrom()).getUsername();
+	String toUsername = userService.findUserByAccountId(currentUser, chosenTransfer.getAccountFrom()).getUsername();
+
 	System.out.println("--------------------------------------------\n" +
 			"Transfer Details\n" +
 			"--------------------------------------------\n" +
 			" Id: " + chosenTransfer.getTransferId() + "\n" +
-			" From: " + (chosenTransfer.getTransferTypeDesc().equals("Send") ? currentUsername : otherUsername) + "\n" +
-			" To: " + (chosenTransfer.getTransferTypeDesc().equals("Send") ? otherUsername : currentUsername) + "\n" +
+			" From: " + fromUsername + "\n" +
+			" To: " + toUsername + "\n" +
 			" Type: " + chosenTransfer.getTransferTypeDesc() + "\n" +
 			" Status: " + chosenTransfer.getTransferStatusId() + "\n" +
 			" Amount: " + chosenTransfer.getAmount());

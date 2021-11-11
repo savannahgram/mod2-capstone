@@ -64,27 +64,40 @@ public class JdbcTransferDao implements TransferDao {
 
     @Override
     public Transfer getTransferByTransferId(int transferId){
-        Transfer newTransfer = null;
-        //sql for knowing whether send or received, so which user based on boolean (if loop to change the parameter)
-        /*
-        String whichName = "account_to";
-        if (findTransferType(transferId) == "Send"){
-            whichName = "account_to";
-        }
+        Transfer newTransfer = new Transfer();
 
-         */
         String sql = "SELECT transfers.transfer_id, transfers.transfer_type_id, transfers.transfer_status_id, " +
                 "transfers.account_from, transfers.account_to, transfers.amount, transfer_types.transfer_type_desc, " +
                 "transfer_statuses.transfer_status_desc, users.username " +
                 "FROM transfers " +
+                "JOIN accounts " +
+                "ON transfers.account_to = accounts.account_id " +
                 "JOIN users " +
-                "ON transfers.account_to = users.user_id " +
+                "ON accounts.user_id = users.user_id " +
                 "JOIN transfer_types " +
                 "ON transfers.transfer_type_id = transfer_types.transfer_type_id " +
                 "JOIN transfer_statuses " +
                 "ON transfers.transfer_status_id = transfer_statuses.transfer_status_id " +
                 "WHERE transfers.transfer_id = ? " +
                 "LIMIT 1;";
+
+                /* "SELECT transfers.transfer_id, transfers.transfer_type_id, transfers.transfer_status_id, " +
+                "transfers.account_from, transfers.account_to, transfers.amount, transfer_types.transfer_type_desc, " +
+                "transfer_statuses.transfer_status_desc, users.username " +
+                "FROM transfers " +
+                "JOIN accounts " +
+                "ON transfers.account_to = accounts.account_id " +
+                "JOIN users " +
+                "ON accounts.user_id = users.user_id " +
+                "JOIN transfer_types " +
+                "ON transfers.transfer_type_id = transfer_types.transfer_type_id " +
+                "JOIN transfer_statuses " +
+                "ON transfers.transfer_status_id = transfer_statuses.transfer_status_id " +
+                "WHERE transfers.transfer_id = ? " +
+                "LIMIT 1;";
+
+
+                 */
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId);
         while (results.next()) {
             newTransfer = mapRowToTransfer(results);
@@ -148,8 +161,8 @@ public class JdbcTransferDao implements TransferDao {
             String transferSql = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                     "VALUES (?, ?, ?, ?, ?) " +
                     "RETURNING transfer_id;";
-            Integer transferId = jdbcTemplate.queryForObject(transferSql, Integer.class, getTransferTypeId("Send"), getTransferStatusId("Approved"),
-                    currentAccountId, chosenAccountId, amount);
+            Integer transferId = jdbcTemplate.queryForObject(transferSql, Integer.class, getTransferTypeId("Send"),
+                    getTransferStatusId("Approved"), currentAccountId, chosenAccountId, amount);
 
             takeFromSender(amount, currentUsername);
             giveToReceiver(amount, chosenUsername);
@@ -163,13 +176,14 @@ public class JdbcTransferDao implements TransferDao {
     public Transfer mapRowToTransfer (SqlRowSet result) {
         Transfer transfer = new Transfer();
         transfer.setTransferId(result.getInt("transfers.transfer_id"));
-        transfer.setTransferTypeId(result.getInt("transfers.transfers_type_id"));
+        transfer.setTransferTypeId(result.getInt("transfers.transfer_type_id"));
         transfer.setTransferTypeDesc(result.getString("transfer_types.transfer_type_desc"));
-        transfer.setTransferStatusId(result.getInt("transfers.transfers_status_id"));
+        transfer.setTransferStatusId(result.getInt("transfers.transfer_status_id"));
         transfer.setTransferStatusDesc(result.getString("transfer_statuses.transfer_status_desc"));
         transfer.setAccountFrom(result.getInt("transfers.account_from"));
         transfer.setAccountTo(result.getInt("transfers.account_to"));
         transfer.setAmount(result.getBigDecimal("transfers.amount"));
+        transfer.setUsernameOfOther(result.getString("users.username"));
         return transfer;
     }
 }
