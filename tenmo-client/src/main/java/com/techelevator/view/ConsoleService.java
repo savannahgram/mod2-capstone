@@ -100,6 +100,13 @@ public class ConsoleService {
 		return amount;
 	}
 
+	public int getTransferDetailId(){
+		out.println("Please enter transfer ID to view details (0 to cancel): \"");
+		int transferIdChoice = Integer.parseInt(in.nextLine());
+		out.flush();
+		return transferIdChoice;
+	}
+
 	public void insufficientFunds(){
 		out.println();
 		out.println(" Insufficient Funds. Please try a smaller amount after viewing your balance. ");
@@ -182,9 +189,8 @@ public class ConsoleService {
 							+ "\n");
 		}
 			System.out.println(
-							"---------\n" +
-							"Please enter transfer ID to view details (0 to cancel): \"");
-		int transferDetailId = in.nextInt();
+							"---------\n");
+		int transferDetailId = getTransferDetailId();
 		printTransferDetails(currentUser, transferDetailId, transferService, userService);
 
 //does not having a space for the + cause a problem?

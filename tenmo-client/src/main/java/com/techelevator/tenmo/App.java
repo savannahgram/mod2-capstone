@@ -110,12 +110,14 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 		int userIdInput = console.getTransferUserId();
 
-		BigDecimal amount = console.getTransferAmount();
-
 		if (userIdInput == 0){
-
+			System.out.println("");
 		}
 
+
+
+		else {
+			BigDecimal amount = console.getTransferAmount();
 		if ((accountService.showBalance(currentUser)[0].subtract(amount).compareTo(BigDecimal.ZERO)) < 0){
 			console.insufficientFunds();
 			return;
@@ -123,21 +125,22 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 
 			else {
-				User chosenUserObject = userService.findById(currentUser, userIdInput);
-				boolean containsChosenUser = false;
-				for (User user : allUsers){
-					if (user.getId() == userIdInput){
-						containsChosenUser = true;
-					}
+			User chosenUserObject = userService.findById(currentUser, userIdInput);
+			boolean containsChosenUser = false;
+			for (User user : allUsers) {
+				if (user.getId() == userIdInput) {
+					containsChosenUser = true;
 				}
+			}
 
-				if(!containsChosenUser){
-					console.incorrectUserId();
-					return;
-				}
+			if (!containsChosenUser) {
+				console.incorrectUserId();
+				return;
+			}
 			SendDTO sendDTO = new SendDTO(chosenUserObject.getUsername(), amount);
-				Transfer newTransfer = transferService.sendTransfer(currentUser, sendDTO);
+			Transfer newTransfer = transferService.sendTransfer(currentUser, sendDTO);
 			console.printTransferDetails(currentUser, newTransfer.getTransferId(), transferService, userService);
+		}
 		}
 
 
