@@ -14,7 +14,7 @@ import java.util.List;
 
 public class AccountService {
 
-    private static final String API_BASE_URL = "http://localhost:8080/account";
+    private static final String API_BASE_URL = "http://localhost:8080/accounts";
     private final RestTemplate restTemplate = new RestTemplate();
 
     private String authToken = null;

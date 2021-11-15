@@ -86,14 +86,14 @@ public class ConsoleService {
 	}
 
 	public int getTransferUserId(){
-		out.println("Id of user you want to send to");
+		out.println("Enter ID of user you are sending to (0 to cancel):");
 		int userIdChoice = Integer.parseInt(in.nextLine());
 		out.flush();
 		return userIdChoice;
 	}
 
 	public BigDecimal getTransferAmount(){
-		out.println("Enter Amount: ");
+		out.println("Enter amount: ");
 		Double transferAmount = Double.parseDouble(in.nextLine());
 		BigDecimal amount = new BigDecimal(transferAmount);
 		out.flush();
@@ -127,6 +127,7 @@ public class ConsoleService {
 				out.println();
 			}
 		}
+		out.println("---------");
 	}
 
 	public void printBalance(BigDecimal[] balances) {
@@ -134,7 +135,7 @@ public class ConsoleService {
 		String printedBalance = "";
 		if (balances != null){
 			if (balances.length == 1){
-				printedBalance = "balance is: " + showAsDollars(balances[0]);
+				printedBalance = "Your current account balance is: " + showAsDollars(balances[0]);
 			}
 			else {
 				for (int i = 0; i < balances.length; i++) {
@@ -175,9 +176,9 @@ public class ConsoleService {
 				isSend = true;
 			}
 			System.out.println(
-					transfer.getTransferId() + "          " + consoleFromType(transfer.getTransferTypeDesc()) + ": " +
-							(isSend ? userService.findUserByAccountId(currentUser, transfer.getAccountFrom()) :
-									userService.findUserByAccountId(currentUser, transfer.getAccountTo())) + "          " + showAsDollars(transfer.getAmount())
+					transfer.getTransferId() + "        " + consoleFromType(transfer.getTransferTypeDesc()) + ": " +
+							(isSend ? userService.findUserByAccountId(currentUser, transfer.getAccountTo()).getUsername() :
+									userService.findUserByAccountId(currentUser, transfer.getAccountFrom()).getUsername()) + "          " + showAsDollars(transfer.getAmount())
 							+ "\n");
 		}
 			System.out.println(
@@ -194,7 +195,7 @@ public void printTransferDetails (AuthenticatedUser currentUser, int transferDet
 	Transfer chosenTransfer = transferService.getTransferByTransferId(currentUser, transferDetailId);
 
 	String fromUsername = userService.findUserByAccountId(currentUser, chosenTransfer.getAccountFrom()).getUsername();
-	String toUsername = userService.findUserByAccountId(currentUser, chosenTransfer.getAccountFrom()).getUsername();
+	String toUsername = userService.findUserByAccountId(currentUser, chosenTransfer.getAccountTo()).getUsername();
 
 	System.out.println("--------------------------------------------\n" +
 			"Transfer Details\n" +
@@ -203,8 +204,8 @@ public void printTransferDetails (AuthenticatedUser currentUser, int transferDet
 			" From: " + fromUsername + "\n" +
 			" To: " + toUsername + "\n" +
 			" Type: " + chosenTransfer.getTransferTypeDesc() + "\n" +
-			" Status: " + chosenTransfer.getTransferStatusId() + "\n" +
-			" Amount: " + chosenTransfer.getAmount());
+			" Status: " + chosenTransfer.getTransferStatusDesc() + "\n" +
+			" Amount: " + showAsDollars(chosenTransfer.getAmount()));
 }
 
 
@@ -213,23 +214,10 @@ public void printTransferDetails (AuthenticatedUser currentUser, int transferDet
 		System.out.println("No transfers were found.");
 	}
 
-	public void printSendTransfer(){
-		System.out.println("-------------------------------------------\n" +
-				"Users\n" +
-				"ID          Name\n" +
-				"-------------------------------------------\n" +
-				"313         Bernice\n" +
-				"54          Larry\n" +
-				"---------\n" +
-				"\n" +
-				"Enter ID of user you are sending to (0 to cancel):\n" +
-				"Enter amount:");
-	}
-
 	public String consoleFromType (String type){
 		HashMap<String, String> typeToConsole = new HashMap<>();
-		typeToConsole.put("Send", "From");
-		typeToConsole.put("Received", "To");
+		typeToConsole.put("Send", "To");
+		typeToConsole.put("Received", "From");
 		return typeToConsole.get(type);
 	}
 

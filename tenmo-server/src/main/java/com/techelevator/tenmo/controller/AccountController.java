@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.security.Principal;
 
 @PreAuthorize("isAuthenticated()")
-@RequestMapping("/account")
+@RequestMapping("/accounts")
 @RestController
 public class AccountController {
 

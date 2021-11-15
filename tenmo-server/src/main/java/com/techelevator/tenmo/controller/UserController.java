@@ -10,7 +10,7 @@ import java.security.Principal;
 import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
-@RequestMapping("/user")
+@RequestMapping("/users")
 @RestController
 public class UserController {
     private UserDao userDao;
@@ -24,8 +24,8 @@ public class UserController {
         return userDao.findAll();
     }
 
-    @RequestMapping(path = "/byusername", method = RequestMethod.GET)
-    public User findByUsername(String username){
+    @RequestMapping(path = "/byusername/{username}", method = RequestMethod.GET)
+    public User findByUsername(@PathVariable String username){
         return userDao.findByUsername(username);
     }
 
@@ -35,14 +35,14 @@ public class UserController {
         return userDao.findById(id);
     }
 
-    @RequestMapping(path = "/findid", method = RequestMethod.GET)
-    public int findIdByUsername(String username){
+    @RequestMapping(path = "/findid/{username}", method = RequestMethod.GET)
+    public int findIdByUsername(@PathVariable String username){
         return userDao.findIdByUsername(username);
     }
 
-    @RequestMapping(path = "/findbyaccount", method = RequestMethod.GET)
-    public User findUserByAccountId(int id){
-        return userDao.findUserByAccountId(id);
+    @RequestMapping(path = "/findbyaccount/{accountId}", method = RequestMethod.GET)
+    public User findUserByAccountId(@PathVariable int accountId){
+        return userDao.findUserByAccountId(accountId);
     }
 
 

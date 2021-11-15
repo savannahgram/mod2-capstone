@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class UserService {
-    private static final String API_BASE_URL = "http://localhost:8080/user";
+    private static final String API_BASE_URL = "http://localhost:8080/users";
     private final RestTemplate restTemplate = new RestTemplate();
 
     private String authToken = null;
@@ -42,11 +42,11 @@ public class UserService {
         return users;
     }
 
-    public User[] findByUsername(AuthenticatedUser currentUser){
+    public User[] findByUsername(AuthenticatedUser currentUser, String username){
         User[] users = null;
         try {
             ResponseEntity<User[]> response =
-                    restTemplate.exchange(API_BASE_URL + "/byusername",
+                    restTemplate.exchange(API_BASE_URL + "/byusername/" + username,
                             HttpMethod.GET, makeAuthEntity(currentUser), User[].class);
             users = response.getBody();
 
@@ -73,7 +73,7 @@ public class UserService {
         User[] users = null;
         try {
             ResponseEntity<User[]> response =
-                    restTemplate.exchange(API_BASE_URL + "/" + "findid",
+                    restTemplate.exchange(API_BASE_URL + "/findid/" + username,
                             HttpMethod.GET, makeAuthEntity(currentUser), User[].class);
             users = response.getBody();
 
@@ -87,7 +87,7 @@ public class UserService {
         User user = null;
         try {
             user =
-                    restTemplate.exchange(API_BASE_URL + "/findbyaccount",
+                    restTemplate.exchange(API_BASE_URL + "/findbyaccount/" + accountId,
                             HttpMethod.GET, makeAuthEntity(currentUser), User.class).getBody();
 
         } catch (RestClientResponseException | ResourceAccessException e) {

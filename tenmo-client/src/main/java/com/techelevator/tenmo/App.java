@@ -112,6 +112,10 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 		BigDecimal amount = console.getTransferAmount();
 
+		if (userIdInput == 0){
+
+		}
+
 		if ((accountService.showBalance(currentUser)[0].subtract(amount).compareTo(BigDecimal.ZERO)) < 0){
 			console.insufficientFunds();
 			return;
@@ -132,7 +136,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 					return;
 				}
 			SendDTO sendDTO = new SendDTO(chosenUserObject.getUsername(), amount);
-				Transfer newTransfer = transferService.sendTransfer(currentUser, sendDTO, currentUser.getUser().getUsername());
+				Transfer newTransfer = transferService.sendTransfer(currentUser, sendDTO);
 			console.printTransferDetails(currentUser, newTransfer.getTransferId(), transferService, userService);
 		}
 
@@ -203,14 +207,5 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		String password = console.getUserInput("Password");
 		return new UserCredentials(username, password);
 	}
-/*
-	private Account filterAccountByUserId(int userId, List<Account> accountList){
-    	Account account = null;
-    	for (Account filter : accountList){
-    		if (filter.getUserId() == userId){
-    			account = filter;
-			}
-		}
-	}
-	*/
+
 }

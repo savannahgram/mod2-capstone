@@ -56,7 +56,7 @@ transfer = response.getBody();
         return transfer;
     }
 
-    public Transfer sendTransfer(AuthenticatedUser currentUser, SendDTO sendDTO, String currentUsername){
+    public Transfer sendTransfer(AuthenticatedUser currentUser, SendDTO sendDTO){
         HttpEntity<SendDTO> entity = makeSendDTOEntity(currentUser, sendDTO);
         Transfer newTransfer = null;
         try {

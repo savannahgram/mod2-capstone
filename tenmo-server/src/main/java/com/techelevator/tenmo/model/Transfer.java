@@ -15,7 +15,7 @@ private String transferStatusDesc;
 private int accountFrom;
 private int accountTo;
 private BigDecimal amount;
-private String usernameOfOther;
+
 
 public Transfer (){
 }
@@ -84,13 +84,6 @@ public Transfer (){
         this.amount = amount;
     }
 
-    public String getUsernameOfOther() {
-        return usernameOfOther;
-    }
-
-    public void setUsernameOfOther(String usernameOfOther) {
-        this.usernameOfOther = usernameOfOther;
-    }
 
 
 }
